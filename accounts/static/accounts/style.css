@@ -23,15 +23,14 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 40px;
     font-weight: 100;
-    color: black;
+    color: orangered;
 }
 
 .f2 {
-    font-family: monospace;
-    font-size: 20px;
-    color: red;
-
-
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 40px;
+    font-weight: 100;
+    color: blue;
 }
 
 .user {

@@ -16,7 +16,10 @@
     <h1 class = "f1">Welcome to Float Moodle!</h1>
     {% if user.is_authenticated %}
       <a href="{% url 'logout' %}"><button class = "B1">Logout</button></a
+        <br>
+      <h1 class = "f2" >Welcome Home! {{user.username}} :) </h1>
     {% else %}
+    <a href="{% url 'signup' %}"><button class = "B1">Signup</button></a>
       <a href="{% url 'login' %}"><button class = "B1">Login</button></a>
     {% endif %}
   </div>
