@@ -13,6 +13,9 @@
     text-decoration:none;
 }
 
+#login{
+    color: tomato;
+}
 
 .dashbox {
   
@@ -46,4 +49,11 @@
     font-weight: 15;
     color: black;
     font-style: italic;
+}
+
+.box{
+    border-style: none;
+    border-width: 0.5mm;
+    background-color: yellow;
+    border-left: 6px solid red;
 }
