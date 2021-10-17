@@ -15,7 +15,7 @@
   <div class = "head">
     <h1 style = "text-align: center;">Float Moodle</h1>
     {% if user.is_authenticated %}
-      <h2 style = "text-align: center;">{{user.username}}</h2>
+      <h3 style = "text-align: center;">{{user.username}}</h3>
       <div style="text-align: center;"><a href="{% url 'logout' %}" ><button class = "B1">Logout</button></a></div>
     {% else %}
     <div style="text-align: center;">
