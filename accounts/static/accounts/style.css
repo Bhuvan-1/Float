@@ -47,8 +47,8 @@
     font-weight: 100;
     font-size: 30px;
     padding: 10px;
-    margin: 20px 700px 20px 700px ;
-    width: auto;
+    margin: 20px 500px 20px 500px ;
+    width: 500px;
 }
 
 .signup{
@@ -118,3 +118,34 @@
     background-color: yellow;
     border-left: 6px solid red;
 }
+
+.main {
+    background-color: #262626;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .button {
+    position: relative;
+    display: block;
+    width: 200px;
+    height: 36px;
+    border-radius: 18px;
+    background-color: #1c89ff;
+    border: solid 1px transparent;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all .1s ease-in-out;
+    &:hover {
+      background-color: transparent;
+      border-color: #fff;
+      transition: all .1s ease-in-out;
+    }
+    
+  }
