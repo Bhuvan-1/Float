@@ -26,6 +26,20 @@
     transition-duration: 0.4s;
 }
 
+.B2 {
+    background-color: #e7eb12;
+    border: 2px solid black;
+    color: rgb(238, 20, 20);
+    padding: 20px 40px;
+    text-align: center;
+    display: inline-block;
+    font-size: 30px;
+    margin: 10px 20px;
+    cursor: pointer;
+    text-decoration:none;
+    transition-duration: 0.3s;
+}
+
 
 .button1:hover{
     background-color: #f44336;
@@ -35,6 +49,11 @@
 .button2:hover{
     background-color: #1aebe0;
     color: white;
+}
+
+.button3:hover{
+    background-color: #c81aeb;
+    color: rgb(98, 31, 231);
 }
 
 .login{
@@ -129,7 +148,7 @@
     align-items: center;
   }
   
-  .button {
+  .button4 {
     position: relative;
     display: block;
     width: 200px;
@@ -142,10 +161,9 @@
     font-weight: 300;
     cursor: pointer;
     transition: all .1s ease-in-out;
-    &:hover {
-      background-color: transparent;
-      border-color: #fff;
-      transition: all .1s ease-in-out;
-    }
-    
   }
+.button4:hover {
+    background-color: transparent;
+    border-color: #fff;
+    transition: all .1s ease-in-out;
+}

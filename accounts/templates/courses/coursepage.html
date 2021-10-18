@@ -4,9 +4,11 @@
 
 {% block content %}
 <div style="text-align: center;">
-    <h1>THis is the course page</h1>
+    <h1 align="left" style="color: rgb(193, 8, 240); float: left;">{{ course.name }}</h1>
+    <h1 align = "right" style="float: right;">{{ course.joincode }}</h1>
     <a href ="{% url 'dashboard' %}"><button class="B1 button2">Dashboard</button></a>
     <a href ="{% url 'CourseHome' %}"><button class="B1 button1">CourseHome</button></a>
+
 </div>  
 
 

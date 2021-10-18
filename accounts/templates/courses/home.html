@@ -4,20 +4,23 @@
 
 {% block content %}
 <div style="text-align: center;">
-    <h1>HELLO WELLCOME TO COURSES</h1>
-    <a href ="{% url 'dashboard' %}"><button class="B1 button2">Dashboard</button></a><br>
     <a href ="{% url 'CourseCreate' %}"><button class="B1 button1">CREATE</button></a>
+    <a href ="{% url 'dashboard' %}"><button class="B1 button2">Dashboard</button></a>
     <a href ="{% url 'CourseJoin' %}"><button class="B1 button1">JOIN</button></a>
 
-    <!-- <ul>
-        {% for course in All_Courses %}
-        <li><a href="{% url 'coursepage' course.pk %}">
-            <button class = "B1 button2">{{ course }}</button>
-        </a></li>
-        {% endfor %}
-    </ul> -->
-
 </div>  
+<hr>
+{% for course in scourses %}
+<a href="{% url 'coursepage' course.pk %}">
+    <button class = "B2 button2">{{ course.name }}</button>
+</a>
+{% endfor %}
+<hr>
+{% for course in icourses %}
+<a href="{% url 'coursepage' course.pk %}">
+    <button class = "B2 button1">{{ course.name }}</button>
+</a>
+{% endfor %}
 
 
 

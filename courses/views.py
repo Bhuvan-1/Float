@@ -1,8 +1,10 @@
 from django.shortcuts import redirect, render
+from django.db.models.signals import post_save
+from django.contrib.auth.models import User
 
 import courses
 from .forms import CourseCreationForm , CourseJoinForm
-from .models import Course , Student , Instructor
+from .models import Course #, Student , Instructor
 import random
 # Create your views here.
 
@@ -22,7 +24,13 @@ def course_info(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    return render(request,'courses/home.html')
+    u = User.objects.get(pk = request.user.pk )
+    args = {
+        'icourses': u.stud_courses.all(),
+        'scourses': u.ins_courses.all(),
+    }
+
+    return render(request,'courses/home.html',args)
 
 def create(request):
 
@@ -46,10 +54,7 @@ def create(request):
                 args = {'form': form, 'wrong': True}
                 return render(request, 'courses/create.html', args)
 
-            I = Instructor.objects.create(user = request.user)
-            I.save()
-
-            c = Course.objects.create(instructor = I)
+            c = Course.objects.create(instructor = request.user)
             c.name = course_name
             c.joincode = code
             c.save()
@@ -79,14 +84,9 @@ def join(request):
                 args = {'form': form, 'wrong': True}
                 return render(request, 'courses/join.html', args)
             
-
-            S = Student.objects.create(user = request.user)
-            S.save()
-
             c = Course.objects.get(joincode = code)
-            c.students.add(S)
+            c.students.add(request.user)
             c.save()
-
 
             return redirect('CourseHome')
 
@@ -98,4 +98,10 @@ def join(request):
 '--------------------------------------------------------------'
 
 def course(request,course_id):
-        return render(request,'courses/coursepage.html')
+        c = Course.objects.get(pk = course_id)
+        args = {
+            'Instructor': c.instructor,
+            'Students': c.students,
+            'course': c
+        }
+        return render(request,'courses/coursepage.html',args)
