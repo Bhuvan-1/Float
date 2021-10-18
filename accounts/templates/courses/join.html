@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Join Course{% endblock %}
+
+{% block content %}
+<div style="text-align: center;">
+    <h1>Join a Course here</h1>
+    <a href ="{% url 'dashboard' %}"><button class="B1 button2">Dashboard</button></a><br>
+    <a href ="{% url 'CourseHome' %}"><button class="B1 button2">Courses</button></a>
+    {% if wrong %}
+    <h1 style="color: orangered;"> Course Does Not Exist</h1>
+    {% endif %}
+</div>  
+
+
+<div class = "login">
+    <h1 style="color: rgb(228, 243, 21);">JOIN COURSE</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="B1 button2">Join</button>
+    </form>
+</div>
+
+{% endblock %}

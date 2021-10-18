@@ -8,8 +8,12 @@ from moodle.forms import SignupForm
 import requests
 
 
-def home(request):
-    return render(request,'base.html')
+def dashboard(request):
+
+	if not request.user.is_authenticated:
+		return redirect('login')
+
+	return render(request,'accounts/dashboard.html')
 
 
 

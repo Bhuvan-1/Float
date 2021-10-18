@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Course{% endblock %}
+
+{% block content %}
+<div style="text-align: center;">
+    <h1>Create a Course here</h1>
+    <a href ="{% url 'dashboard' %}"><button class="B1 button2">Dashboard</button></a>
+    <a href ="{% url 'CourseHome' %}"><button class="B1 button2">Courses</button></a>
+
+    {% if wrong %}
+    <h1 style="color: orangered;"> Course Name ALready Exist</h1>
+    {% endif %}
+</div>  
+
+<div class = "login">
+    <h1 style="color: rgb(228, 243, 21);">NEW COURSE</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="B1 button2">create</button>
+    </form>
+</div>
+
+
+{% endblock %}

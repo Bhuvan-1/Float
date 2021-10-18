@@ -15,12 +15,12 @@
   <div class = "head">
     <h1 style = "text-align: center;">Float Moodle</h1>
     {% if user.is_authenticated %}
-      <h3 style = "text-align: center;">{{user.username}}</h3>
-      <div style="text-align: center;"><a href="{% url 'logout' %}" ><button class = "B1">Logout</button></a></div>
+      <h3 style = "text-align: center; color: rgb(230, 226, 8);">{{user.username}}</h3>
+      <div style="text-align: right;"><a href="{% url 'logout' %}" ><button class = "B1 button1">Logout</button></a></div>
     {% else %}
     <div style="text-align: center;">
-      <a href="{% url 'signup' %}"><button class = "B1">Signup</button></a>
-      <a href="{% url 'login' %}"><button class = "B1">Login</button></a>
+      <a href="{% url 'signup' %}"><button class = "B1 button1">Signup</button></a>
+      <a href="{% url 'login' %}"><button class = "B1 button1">Login</button></a>
     </div>
     {% endif %}
   </div>

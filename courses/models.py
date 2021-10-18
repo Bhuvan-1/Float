@@ -5,29 +5,33 @@ from django.db import models
 from django.contrib.auth.models import  User
 from django.db.models.fields import DateTimeField
 from django.db.models.signals import post_save
-import requests
+
+import random
 
 
+class Instructor(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
 
-# class Course(models.Model):
+    def __str__(self):
+        return self.user.username
 
-#     instructor = models.ForeignKey(User,on_delete=models.CASCADE)
+class Student(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
 
-#     name = models.CharField(max_length=128,default = '')
-#     star_count = models.IntegerField(default=0)
-#     #Assignments
-#     #Lectures
-#     #Grades
+    def __str__(self):
+        return self.user.username
 
 
-#     def __str__(self):
-#             return self.name
+class Course(models.Model):
 
-# class Student(models.Model):
+    instructor = models.ForeignKey(Instructor,on_delete=models.CASCADE)
+    name = models.CharField(max_length=128,default = '')
+    students = models.ManyToManyField(Student)
+    joincode = models.CharField(max_length=10,default = '')
 
-#     user = models.OneToOneField(User,on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
 
-#class Instructor
 
 #class Assignment
 

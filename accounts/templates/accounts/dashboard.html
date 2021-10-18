@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div style="text-align: center;">
+<h1 style="color: rgb(235, 20, 138);">This is your Dashboard</h1>
+<a href ="{% url 'CourseHome' %}"><button class="B1 button2">Courses</button></a>
+
+{% endblock %}
