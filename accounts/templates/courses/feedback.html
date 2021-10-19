@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Submissions{% endblock %}
+
+
+{% block content %}
+<div style="text-align: center;">
+    <a href ="{% url 'coursepage' course.pk %}">
+        <button class="button4">{{ course.name }}</button>
+    </a>
+    <a href ="{% url 'submissions' course.pk assign.pk %}"><button class="button4">Submissions</button></a>
+    <a href ="{% url 'CourseHome' %}"><button class="button4">CoursesHome</button></a>
+    <a href ="{% url 'assign_page' course.pk assign.pk %}"><button class="button4">Assignment</button></a>
+</div>
+
+
+{% endblock %}

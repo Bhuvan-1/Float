@@ -20,7 +20,7 @@
 <br>
 {% for a in assignments %}
 <a href="{% url 'assign_page' course.pk a.pk %}">
-    <button class = "button5">{{ a.name }}</button><br>
+    <button class = "button5">{{ a.name }}</button> 
 </a>
 {% endfor %}
 

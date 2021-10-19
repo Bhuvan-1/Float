@@ -13,9 +13,9 @@
 
 
 .B1 {
-    background-color: white;
+    background-color: rgb(222, 255, 34);
     border: 2px solid black;
-    color: green;
+    color: rgb(38, 99, 231);
     padding: 8px 15px;
     text-align: center;
     display: inline-block;
@@ -24,10 +24,11 @@
     cursor: pointer;
     text-decoration:none;
     transition-duration: 0.4s;
+    border-radius: 15px;
 }
 
 .B2 {
-    background-color: #e7eb12;
+    background-color: #12eb86;
     border: 2px solid black;
     color: rgb(238, 20, 20);
     padding: 20px 40px;
@@ -38,6 +39,7 @@
     cursor: pointer;
     text-decoration:none;
     transition-duration: 0.3s;
+    border-radius: 20px;
 }
 
 
@@ -104,9 +106,9 @@
 
 .f1 {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 40px;
+    font-size: 25px;
     font-weight: 100;
-    color: orangered;
+    color: rgb(0, 0, 0);
 }
 
 .f2 {
@@ -181,10 +183,69 @@
     font-weight: 300;
     cursor: pointer;
     transition: all .1s ease-in-out;
-    margin: 15px;
+    margin: 15px 25px 15px 25px ;
   }
 .button5:hover {
     background-color: rgb(27, 162, 240);
     border-color: rgb(19, 17, 17);
     transition: all .1s ease-in-out;
+}
+
+.button6 {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 30px;
+    border-radius: 18px;
+    background-color: #273beb;
+    border: solid 1px transparent;
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all .1s ease-in-out;
+    margin: 10px;
+  }
+.button6:hover {
+    background-color: rgb(197, 27, 240);
+    border-color: rgb(19, 17, 17);
+    transition: all .1s ease-in-out;
+}
+
+.dis{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 25px;
+    font-weight: 25;
+    color: black;
+    font-style: italic;
+}
+
+.assignment{
+    color: rgb(8, 8, 8);
+    border: 6px solid rgb(29, 241, 248);
+    background-color: rgba(144, 253, 111, 0.842);
+    border-radius: 30px;
+    text-align: center;
+    font-family:  Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 100;
+    font-size: 20px;
+    padding: 10px;
+    margin: 20px 200px 20px 200px ;
+    width: auto;
+}
+
+
+.feed{
+    color: rgb(8, 8, 8);
+    border: 6px solid rgb(29, 241, 248);
+    background-color: rgb(200, 148, 250);
+    border-radius: 30px;
+    text-align: center;
+    font-family:  Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 50;
+    font-size: 20px;
+    padding: 10px;
+    margin: 10px ;
+    width: auto;
+    font-style: italic;
 }

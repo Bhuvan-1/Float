@@ -4,8 +4,8 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 
 import courses
-from .forms import AssignCreationForm, CourseCreationForm , CourseJoinForm
-from .models import Assignment, Course #, Student , Instructor
+from .forms import AssignCreationForm, AssignmentSubmitForm, CourseCreationForm , CourseJoinForm
+from .models import Assignment, Course, FileSubmission #, Student , Instructor
 import random
 # Create your views here.
 
@@ -127,13 +127,21 @@ def assign_create(request,course_id):
         return redirect('CourseHome')  
 
     if request.method == 'POST':
-        form  = AssignCreationForm(request.POST)
+        form  = AssignCreationForm(request.POST,request.FILES)
         if form.is_valid():
             assign_name = form.cleaned_data['name']
-            print('assignmnet' + assign_name + 'created')
+            ref = form.cleaned_data['weblink']
+            msg = form.cleaned_data['statement']
+            #f_name = form.cleaned_data['file_name']
+            a_file = request.FILES.get('file',False)
 
             a = Assignment.objects.create(name = assign_name,course = c)
-            #a.course = c
+            a.statement = msg
+            a.link = ref
+
+            if a_file:   #checking if file exists or not.
+                a.file  = a_file
+                a.file_name = a.file.name.split("/")[-1]
             a.save()
 
             return redirect('coursepage',course_id = c.pk)
@@ -151,4 +159,103 @@ def assign_create(request,course_id):
 
 
 def assign(request,course_id,assign_id):
-    return render(request,'courses/assign_page.html')
+    a = Assignment.objects.get(pk = assign_id)
+    c = Course.objects.get(pk = course_id )
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    c = Course.objects.get(pk = course_id)
+    names = [ s.username for s in c.students.all() ]
+    uname = request.user.username
+    if uname not in names and uname != c.instructor.username:
+        return redirect('CourseHome')
+
+
+    if request.method == "POST":
+        form = AssignmentSubmitForm(request.POST,request.FILES)
+        if form.is_valid():
+            s_file = request.FILES.get('file',False)
+
+            if FileSubmission.objects.filter(user = request.user,assignment = a).exists():#resubmission.
+                s = FileSubmission.objects.get(user = request.user,assignment = a)
+            else:
+                s = FileSubmission.objects.create(user = request.user, assignment = a)
+            if s_file:
+                s.file = s_file
+                s.file_name = s.file.name.split("/")[-1]
+            s.save()
+                
+        return redirect('assign_page',course_id = c.pk,assign_id = a.pk)
+    else:
+        form = AssignmentSubmitForm()
+
+    
+    subms = list(a.filesubmission_set.all())
+    submitted = False
+    for sub in subms:
+        if request.user.username == sub.user.username:
+            submitted = True
+            break
+    if submitted:
+        mysubmission = FileSubmission.objects.get(user = request.user,assignment = a)
+    else:
+        mysubmission = {'feedback': 'You Did Not Submit'}
+
+    instruct = True
+    if c.instructor.username != request.user.username:
+        instruct = False
+        
+    args = {
+        'form': form,
+        'assign': a,
+        'course': c,
+        'submissions': list(a.filesubmission_set.all()),
+        'submitted': submitted,
+        'mysub': mysubmission,
+        'instruct': instruct
+    }
+    return render(request,'courses/assign_page.html',args)
+
+
+def submissions(request,course_id,assign_id):
+    a = Assignment.objects.get(pk = assign_id)
+    c = Course.objects.get(pk = course_id )
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    uname = request.user.username
+    if uname != c.instructor.username:
+        return redirect('CourseHome')
+
+    args = {
+        'assign': a,
+        'course': c,
+        'submissions': list(a.filesubmission_set.all()),
+    }
+    return render(request,'courses/submissions.html',args)
+
+def feedback(request,course_id,assign_id):
+    a = Assignment.objects.get(pk = assign_id)
+    c = Course.objects.get(pk = course_id )
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    uname = request.user.username
+    if uname != c.instructor.username:
+        return redirect('CourseHome')
+
+    args = {
+        'assign': a,
+        'course': c,
+        'submissions': list(a.filesubmission_set.all()),
+    }
+    return render(request,'courses/feedback.html',args)
+
+
+
+
+    #FEED BACK FORM-----MODEL SAVE FEED BACK, CORRECTED  =TRUE;
+    #CHANGE PASSWORD ETC..

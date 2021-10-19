@@ -8,5 +8,7 @@ urlpatterns = [
     path('join/',views.join,name = 'CourseJoin'),
     path('<int:course_id>/',views.course,name = 'coursepage'),
     path('<int:course_id>/create',views.assign_create,name ='assign_create'),
-    path('<int:course_id>/assign/<int:assign_id>',views.assign,name ='assign_page')
+    path('<int:course_id>/assign/<int:assign_id>',views.assign,name ='assign_page'),
+    path('<int:course_id>/assign/<int:assign_id>/submissions',views.submissions,name ='submissions'),
+    path('<int:course_id>/assign/<int:assign_id>/feedback',views.feedback,name ='feedback')
 ]

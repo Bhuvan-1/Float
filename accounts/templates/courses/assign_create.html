@@ -16,7 +16,7 @@
 
 <div class = "login">
     <h1 style="color: rgb(21, 199, 243);">NEW ASSIGNMENT</h1>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data" action="" >
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit" class="B1 button2">create</button>

@@ -4,7 +4,59 @@
 
 {% block content %}
 
-<h1>ASSIGNMENT</h1>
+<div style="text-align: center;">
+    <a href ="{% url 'dashboard' %}"><button class="B1 button2">Dashboard</button></a>
+    <a href ="{% url 'coursepage' course.pk %}">
+        <button class="B2 button1">{{ course.name }}</button>
+    </a>
+    <a href ="{% url 'CourseHome' %}"><button class="B1 button1">CoursesHome</button></a>
+</div>   
 
+<hr style="height: 5px; color: blanchedalmond; background-color: cadetblue;">
+<div style="text-align: center;">
+    <div class="f1"><h1>{{ assign.name }} ({{ course.name }})</h1></div>
+    {% if assign.file.name %}
+    <h3 style="color: rgb(36, 250, 100);">{{ assign.file_name }}</h3>
+    <a download href="{{assign.file.url}}">
+        <button class="button6">Problem File</button>
+    </a><br>
+    {% endif %}
+    {% if assign.link != '' %}
+        <a href= "{{assign.link}}" >
+            <button class="button6" style="background-color: coral; color: aqua;">Problem Link</button>
+        </a>
+    {% endif %}
+    <p class = "dis">{{ assign.statement }}</p>
+</div>
+<hr style="height: 5px; color: blanchedalmond; background-color: cadetblue;">
+{% if instruct %}
+<div style="text-align: center">
+    <h1 >{{ submissions|length }} Submitted</h1>
+    <a href="{% url 'submissions' course.pk assign.pk %}">
+        <button class="button4"> View Submissions</button>
+      </a><br>
+
+</div>
+{% else %}
+<div class="assignment">
+    <form method="post" enctype="multipart/form-data" action="" >
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button4">Submit</button>
+      </form>
+
+      {% if submitted %}
+      <h1 style="color: rgb(198, 72, 236);">SUBMITTED</h1>
+      <a download href="{{mysub.file.url}}">
+        <button class="button6">{{mysub.file_name}}</button>
+      </a><br>
+      <div class="feed">
+        <p>{{ mysub.feedback }}</p>
+      </div>
+      {% else %}
+      <h1 style="color: rgb(238, 38, 38);">NOT SUBMITTED!!</h1>
+      {% endif %}
+</div>
+{% endif %}
 
 {% endblock %}

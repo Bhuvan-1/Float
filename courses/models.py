@@ -22,13 +22,22 @@ class Course(models.Model):
 
 class Assignment(models.Model):
     name = models.CharField(max_length=128,default='')
+    link = models.URLField(default='')
+    file_name = models.CharField(max_length=100,default='problem_statement')
+    file = models.FileField(upload_to='assignments',blank=True)
+    statement = models.CharField(max_length=300,default='')
     course = models.ForeignKey(Course,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 class FileSubmission(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    file = models.FileField()
+    file = models.FileField(upload_to='submissions',blank=True)
+    file_name = models.CharField(max_length=100,default='submission')
     assignment = models.ForeignKey(Assignment,on_delete=models.CASCADE)
-
+    feedback = models.CharField(max_length=500,default='Your Feedback Appears Here')
+    corrected = models.CharField(max_length=10,default='NO')
 
 
 

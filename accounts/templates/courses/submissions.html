@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Submissions{% endblock %}
+{% block H %}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+
+{% endblock %}
+
+{% block content %}
+<div style="text-align: center;">
+    <a href ="{% url 'coursepage' course.pk %}">
+        <button class="button4">{{ course.name }}</button>
+    </a>
+    <a href ="{% url 'CourseHome' %}"><button class="button4">CoursesHome</button></a>
+    <a href ="{% url 'assign_page' course.pk assign.pk %}"><button class="button4">Assignment</button></a>
+</div>
+
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th >S/N</th>
+                    <th >Student</th>
+                    <th >File Name and Link</th>
+                    <th>Correction Status</th>
+                    <th>Feedback</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for d in submissions %}
+                  <tr>
+                    <th>{{forloop.counter}}</th>
+                    <th>{{user.username}}</th>
+                    <th><a download href="{{d.file.url}}">{{d.file_name}}</a></th>
+                    <th>{{d.corrected}}</th>
+                    <th><a href="{%url 'feedback' course.pk assign.pk %}">Give Feedback</a></th>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
