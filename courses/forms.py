@@ -5,3 +5,7 @@ class CourseCreationForm(forms.Form):
 
 class CourseJoinForm(forms.Form):
     code = forms.CharField(label='Enter Course Code', max_length=10)
+
+class AssignCreationForm(forms.Form):
+    name = forms.CharField(label='Assignment name', max_length=100)
+    

@@ -150,20 +150,41 @@
   
   .button4 {
     position: relative;
-    display: block;
+    display: inline-block;
     width: 200px;
-    height: 36px;
+    height: 60px;
     border-radius: 18px;
-    background-color: #1c89ff;
+    background-color: #ffa41c;
     border: solid 1px transparent;
     color: #fff;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 300;
     cursor: pointer;
     transition: all .1s ease-in-out;
   }
 .button4:hover {
-    background-color: transparent;
-    border-color: #fff;
+    background-color: rgb(197, 27, 240);
+    border-color: rgb(19, 17, 17);
+    transition: all .1s ease-in-out;
+}
+
+.button5 {
+    position: relative;
+    display: inline-block;
+    width: 400px;
+    height: 50px;
+    border-radius: 18px;
+    background-color: #1cffa0;
+    border: solid 1px transparent;
+    color: rgb(15, 15, 14);
+    font-size: 20px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all .1s ease-in-out;
+    margin: 15px;
+  }
+.button5:hover {
+    background-color: rgb(27, 162, 240);
+    border-color: rgb(19, 17, 17);
     transition: all .1s ease-in-out;
 }

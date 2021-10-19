@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}CoursePage{% endblock %}
+
+{% block content %}
+<div style="text-align: center;">
+    <a href ="{% url 'dashboard' %}"><button class="B1 button2">Dashboard</button></a>
+    <a href ="{% url 'CourseHome' %}"><button class="B1 button1">CoursesHome</button></a>
+</div>  
+
+<div style="text-align: center; float: left;">
+    <a href ="{% url 'coursepage' course.pk %}">
+        <button class="B2 button1">{{ course.name }}</button>
+    </a>
+</div>
+
+<div class = "login">
+    <h1 style="color: rgb(21, 199, 243);">NEW ASSIGNMENT</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="B1 button2">create</button>
+    </form>
+</div>
+
+
+
+{% endblock %}

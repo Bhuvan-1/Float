@@ -8,9 +8,20 @@
     <h1 align = "right" style="float: right;">{{ course.joincode }}</h1>
     <a href ="{% url 'dashboard' %}"><button class="B1 button2">Dashboard</button></a>
     <a href ="{% url 'CourseHome' %}"><button class="B1 button1">CourseHome</button></a>
-
 </div>  
 
-
+{% if user.username == Instructor.username %}
+    <div style="text-align: center; float: right;">
+        <a href ="{% url 'assign_create' course.pk %}">
+            <button class="button4">Create New Assignment</button>
+        </a>
+    </div>
+{% endif %}
+<br>
+{% for a in assignments %}
+<a href="{% url 'assign_page' course.pk a.pk %}">
+    <button class = "button5">{{ a.name }}</button><br>
+</a>
+{% endfor %}
 
 {% endblock %}
