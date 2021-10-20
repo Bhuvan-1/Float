@@ -249,3 +249,15 @@
     width: auto;
     font-style: italic;
 }
+
+
+.profile {
+    background-color: #e358ff;
+    margin: 10px 300px 10px 300px;
+    padding: 15px;
+    border-radius: 40px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 20px;
+    font-weight: 100;
+    color: rgb(0, 0, 0);
+}

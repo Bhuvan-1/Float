@@ -30,11 +30,11 @@ class SignupForm(UserCreationForm):	#creating our custom registration form
 			user.save()
 		return user
 	
-	class ProfileChangeForm(UserChangeForm):
-		class Meta:
-			model = User
-			fields = (
-			'email',
-			'first_name',
-			'last_name',
-			)
+class ProfileChangeForm(UserChangeForm):
+	class Meta:
+		model = User
+		fields = (
+		'email',
+		'first_name',
+		'last_name',
+		)
