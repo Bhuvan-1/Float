@@ -17,7 +17,7 @@
     <a href ="{% url 'assign_page' course.pk assign.pk %}"><button class="button4">Assignment</button></a>
 </div>
 
-
+<div class="f1" style="text-align: center;"><h1>{{ assign.name }} ({{ course.name }})  [ {{ assign.maxmarks }}]</h1></div>
 
 <div class="container mt-5">
     <div class="row">
@@ -30,16 +30,22 @@
                     <th >File Name and Link</th>
                     <th>Correction Status</th>
                     <th>Feedback</th>
+                    <th>Grade</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for d in submissions %}
                   <tr>
                     <th>{{forloop.counter}}</th>
-                    <th>{{user.username}}</th>
+                    <th>{{d.user.username}}</th>
                     <th><a download href="{{d.file.url}}">{{d.file_name}}</a></th>
                     <th>{{d.corrected}}</th>
-                    <th><a href="{%url 'feedback' course.pk assign.pk %}">Give Feedback</a></th>
+                    {% if d.corrected == "YES" %}
+                      <th><a href="{%url 'feedback' course.pk assign.pk d.pk %}">View/Modify Feedback</a></th>
+                    {% else %}
+                      <th><a href="{%url 'feedback' course.pk assign.pk d.pk %}">Give Feedback</a></th>
+                    {% endif %}
+                      <th>{{ d.grade }}</th>
                   </tr>
                   {% endfor %}
                 </tbody>

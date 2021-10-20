@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 
 import courses
-from .forms import AssignCreationForm, AssignmentSubmitForm, CourseCreationForm , CourseJoinForm
+from .forms import AssignCreationForm, AssignmentSubmitForm, CourseCreationForm , CourseJoinForm, FeedbackForm
 from .models import Assignment, Course, FileSubmission #, Student , Instructor
 import random
 # Create your views here.
@@ -138,6 +138,7 @@ def assign_create(request,course_id):
             a = Assignment.objects.create(name = assign_name,course = c)
             a.statement = msg
             a.link = ref
+            a.maxmarks = form.cleaned_data['marks']
 
             if a_file:   #checking if file exists or not.
                 a.file  = a_file
@@ -236,9 +237,10 @@ def submissions(request,course_id,assign_id):
     }
     return render(request,'courses/submissions.html',args)
 
-def feedback(request,course_id,assign_id):
+def feedback(request,course_id,assign_id,sub_id):
     a = Assignment.objects.get(pk = assign_id)
     c = Course.objects.get(pk = course_id )
+    s = FileSubmission.objects.get(pk = sub_id)
 
     if not request.user.is_authenticated:
         return redirect('login')
@@ -247,15 +249,31 @@ def feedback(request,course_id,assign_id):
     if uname != c.instructor.username:
         return redirect('CourseHome')
 
+
+    if request.method == "POST":
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data['feedback'])
+            s.feedback = form.cleaned_data['feedback']
+            s.corrected = 'YES'
+            s.grade = form.cleaned_data['grade']
+            s.save()
+
+            return redirect('submissions',course_id,assign_id)
+    else:
+        if s.corrected == "YES":
+            form = FeedbackForm({'feedback': s.feedback})
+        else:
+            form = FeedbackForm()
+
     args = {
         'assign': a,
         'course': c,
         'submissions': list(a.filesubmission_set.all()),
+        'sub': s,
+        'form': form
     }
     return render(request,'courses/feedback.html',args)
 
 
-
-
-    #FEED BACK FORM-----MODEL SAVE FEED BACK, CORRECTED  =TRUE;
     #CHANGE PASSWORD ETC..

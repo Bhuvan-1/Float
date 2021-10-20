@@ -14,9 +14,9 @@
 
 <hr style="height: 5px; color: blanchedalmond; background-color: cadetblue;">
 <div style="text-align: center;">
-    <div class="f1"><h1>{{ assign.name }} ({{ course.name }})</h1></div>
+    <div class="f1"><h1>{{ assign.name }} ({{ course.name }})  [ {{ assign.maxmarks }}]</h1></div>
     {% if assign.file.name %}
-    <h3 style="color: rgb(36, 250, 100);">{{ assign.file_name }}</h3>
+    <h3 style="color: rgb(224, 54, 240);">{{ assign.file_name }}</h3>
     <a download href="{{assign.file.url}}">
         <button class="button6">Problem File</button>
     </a><br>
@@ -26,7 +26,9 @@
             <button class="button6" style="background-color: coral; color: aqua;">Problem Link</button>
         </a>
     {% endif %}
-    <p class = "dis">{{ assign.statement }}</p>
+    <div class = "dis">
+        <p>{{ assign.statement|linebreaks }}</p>
+    </div>
 </div>
 <hr style="height: 5px; color: blanchedalmond; background-color: cadetblue;">
 {% if instruct %}
@@ -42,17 +44,25 @@
     <form method="post" enctype="multipart/form-data" action="" >
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="button4">Submit</button>
+        {% if submitted %}
+            <button type="submit" class="button4">Re-Submit</button>
+        {% else %}
+            <button type="submit" class="button4">Submit</button>
+        {% endif %}
       </form>
 
       {% if submitted %}
       <h1 style="color: rgb(198, 72, 236);">SUBMITTED</h1>
-      <a download href="{{mysub.file.url}}">
+      <hr style="height: 1px; color: blanchedalmond; background-color: cadetblue;">
+      <p>Submitted file:</p><a download href="{{mysub.file.url}}">
         <button class="button6">{{mysub.file_name}}</button>
       </a><br>
-      <div class="feed">
-        <p>{{ mysub.feedback }}</p>
-      </div>
+      <hr style="height: 1px; color: blanchedalmond; background-color: cadetblue;">
+      {% if mysub.corrected == "YES" %}
+        <h1 class = "it" style="color: rgb(245, 71, 71); font-size: 30px;">Grade: {{ mysub.grade }}/{{assign.maxmarks}} </h1>
+      {% endif %}
+      <h1 class = "it">Feedback:</h1><div class="feed">
+        <p>{{ mysub.feedback|linebreaks }}</p>
       {% else %}
       <h1 style="color: rgb(238, 38, 38);">NOT SUBMITTED!!</h1>
       {% endif %}

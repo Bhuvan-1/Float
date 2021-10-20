@@ -1,7 +1,28 @@
 {% extends 'base.html' %}
 
-{% block title %}Submissions{% endblock %}
+{% block title %}Feedback{% endblock %}
 
+{% block H %}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+
+
+<style>
+ .textarea {
+  width: 100%;
+  height: 200px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 15px;
+  background-color: #f8f8f8;
+  resize: none;
+}
+
+</style>
+
+{% endblock %}
 
 {% block content %}
 <div style="text-align: center;">
@@ -12,6 +33,54 @@
     <a href ="{% url 'CourseHome' %}"><button class="button4">CoursesHome</button></a>
     <a href ="{% url 'assign_page' course.pk assign.pk %}"><button class="button4">Assignment</button></a>
 </div>
+
+<div class="f1" style="text-align: center;"><h1>{{ assign.name }} ({{ course.name }})  [ {{ assign.maxmarks }}]</h1></div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th >Student</th>
+                    <th >File Name and Link</th>
+                    <th>Correction Status</th>
+                    <th>Grade</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>{{sub.user.username}}</th>
+                    <th><a download href="{{sub.file.url}}">{{sub.file_name}}</a></th>
+                    <th>{{sub.corrected}}</th>
+                    <th>{{ sub.grade }}</th>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+    </div>
+</div>
+
+<div style="text-align: center;">
+<form method="post">
+    {% csrf_token %}
+    {{form.non_field_errors}}
+    <div class="fieldWrapper">
+        {{ form.feedback.errors }}
+        <label for="{{ form.feedback.id_for_label}}" class = "it">Feedback</label><br>
+        {{ form.feedback }}
+        <br>
+        {{ form.grade.errors }}
+        <label for="{{ form.grade.id_for_label}}" class = "it">Grade</label><br>
+        {{ form.grade }}
+    </div>
+    <br>
+    <br>
+    <br>
+    <button type="submit" class="B1 button2">Submit</button>
+  </form>
+</div>
+
 
 
 {% endblock %}

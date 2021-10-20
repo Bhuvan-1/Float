@@ -27,6 +27,7 @@ class Assignment(models.Model):
     file = models.FileField(upload_to='assignments',blank=True)
     statement = models.CharField(max_length=300,default='')
     course = models.ForeignKey(Course,on_delete=models.CASCADE)
+    maxmarks = models.IntegerField(default=100)
 
     def __str__(self):
         return self.name
@@ -38,6 +39,11 @@ class FileSubmission(models.Model):
     assignment = models.ForeignKey(Assignment,on_delete=models.CASCADE)
     feedback = models.CharField(max_length=500,default='Your Feedback Appears Here')
     corrected = models.CharField(max_length=10,default='NO')
+    grade = models.IntegerField(default=-1)
+
+
+    def __str__(self):
+        return self.user.username + self.file_name + self.assignment.name
 
 
 
