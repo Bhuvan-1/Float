@@ -7,6 +7,7 @@ import courses
 from .forms import AssignCreationForm, AssignmentSubmitForm, CourseCreationForm , CourseJoinForm, FeedbackForm
 from .models import Assignment, Course, FileSubmission #, Student , Instructor
 import random
+import datetime
 # Create your views here.
 
 
@@ -20,17 +21,50 @@ def generate_code(): #function to generate random course code.
 
 '''--------------------------------------------------------------'''
 
+#courses_home
+#added-Student an instructor ToDO list
 def course_info(request):
 
     if not request.user.is_authenticated:
         return redirect('login')
 
     u = User.objects.get(pk = request.user.pk )
+
+    Itodo_List = [] #list of TO-DO assignments for 'I'nstructors ['S' ==> students, 'I' ==> Instructors ]
+    Stodo_List = [] #list of TO-DO of students
+
+    now = datetime.datetime.now()
+    for course in u.ins_courses.all():
+        for assign in course.assignment_set.all():
+            if now > assign.deadline:
+                graded=True
+                for sub in assign.filesubmission_set.all():
+                    if sub.corrected == 'NO':
+                        graded = False
+                        break
+                if not graded:
+                    Itodo_List.append(assign)
+
+
+    for course in u.stud_courses.all():
+        for assign in course.assignment_set.all():
+            if now < assign.deadline:
+                submitted=False
+                for sub in assign.filesubmission_set.all():
+                    if sub.user.username == request.user.username:
+                        submitted = True
+                        break
+                if not submitted:
+                    Stodo_List.append(assign)
+            
+
     args = {
         'icourses': u.stud_courses.all(),
         'scourses': u.ins_courses.all(),
+        'Itodo': Itodo_List,
+        'Stodo': Stodo_List,
     }
-
+        
     return render(request,'courses/home.html',args)
 
 def create(request):
@@ -98,6 +132,7 @@ def join(request):
 
 '--------------------------------------------------------------'
 
+#course_page
 def course(request,course_id):
     
     if not request.user.is_authenticated:
@@ -117,6 +152,8 @@ def course(request,course_id):
     }
     return render(request,'courses/coursepage.html',args)
 
+
+#added the assign_deadline[ in form too] while saving form into an object. 22/11____23/11[bug]
 def assign_create(request,course_id):
     
     if not request.user.is_authenticated:
@@ -132,10 +169,11 @@ def assign_create(request,course_id):
             assign_name = form.cleaned_data['name']
             ref = form.cleaned_data['weblink']
             msg = form.cleaned_data['statement']
+            dedline = form.cleaned_data['deadline']
             #f_name = form.cleaned_data['file_name']
             a_file = request.FILES.get('file',False)
 
-            a = Assignment.objects.create(name = assign_name,course = c)
+            a = Assignment.objects.create(name = assign_name,course = c,deadline = dedline)
             a.statement = msg
             a.link = ref
             a.maxmarks = form.cleaned_data['marks']
@@ -159,6 +197,7 @@ def assign_create(request,course_id):
     return render(request,'courses/assign_create.html',args)
 
 
+#added the deadline to render 22/11.
 def assign(request,course_id,assign_id):
     a = Assignment.objects.get(pk = assign_id)
     c = Course.objects.get(pk = course_id )
@@ -206,6 +245,8 @@ def assign(request,course_id,assign_id):
     instruct = True
     if c.instructor.username != request.user.username:
         instruct = False
+
+    deadline = a.deadline
         
     args = {
         'form': form,
@@ -214,7 +255,8 @@ def assign(request,course_id,assign_id):
         'submissions': list(a.filesubmission_set.all()),
         'submitted': submitted,
         'mysub': mysubmission,
-        'instruct': instruct
+        'instruct': instruct,
+        'deadline': deadline,
     }
     return render(request,'courses/assign_page.html',args)
 

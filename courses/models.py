@@ -28,6 +28,7 @@ class Assignment(models.Model):
     statement = models.CharField(max_length=300,default='')
     course = models.ForeignKey(Course,on_delete=models.CASCADE)
     maxmarks = models.IntegerField(default=100)
+    deadline = models.DateTimeField(blank=False) #need to set while creating assign.
 
     def __str__(self):
         return self.name
@@ -40,6 +41,7 @@ class FileSubmission(models.Model):
     feedback = models.CharField(max_length=500,default='Your Feedback Appears Here')
     corrected = models.CharField(max_length=10,default='NO')
     grade = models.IntegerField(default=-1)
+    sub_time = models.DateTimeField(auto_now=True) #last 'MODIFIED' time. // automatically updates itself.
 
 
     def __str__(self):

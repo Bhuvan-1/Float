@@ -3,25 +3,40 @@
 {% block title %}Courses{% endblock %}
 
 {% block content %}
+<hr style="height: 10px; background-color: aquamarine;">
 <div style="text-align: center;">
     <a href ="{% url 'CourseCreate' %}"><button class="B1 button1">CREATE</button></a>
     <a href ="{% url 'dashboard' %}"><button class="B1 button2">Dashboard</button></a>
     <a href ="{% url 'CourseJoin' %}"><button class="B1 button1">JOIN</button></a>
 
 </div>  
-<hr>
+<hr style="height: 10px; background-color: aquamarine;">
+<div class="it">TEACHER</div>
 {% for course in scourses %}
 <a href="{% url 'coursepage' course.pk %}">
     <button class = "B2 button2">{{ course.name }}</button>
 </a>
 {% endfor %}
-<hr>
+<hr style="height: 10px; background-color: aquamarine;">
+<div class="it">STUDENT</div>
 {% for course in icourses %}
 <a href="{% url 'coursepage' course.pk %}">
     <button class = "B2 button1">{{ course.name }}</button>
 </a>
 {% endfor %}
+<hr style="height: 10px; background-color: aquamarine;">
 
+<div class="it">
+    <h2>Grading:</h2>
+    {% for assign in Itodo %}
+        <h2 style="color: orange;">{{ assign.name }}</h2>
+    {% endfor %}
+    <br>
+    <h2>Submissions:</h2>
+    {% for assign in Stodo %}
+        <h2 style="color: rgb(228, 11, 40);">{{ assign.name }}</h2>
+    {% endfor %}
+</div>
 
 
 {% endblock %}

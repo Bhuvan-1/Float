@@ -1,5 +1,11 @@
 from django import forms
 
+#Default form date time field is type='text'
+#Now it renders as a type='datetime-local' in HTML.
+class DateTimeInput(forms.DateTimeInput):
+    input_type = 'datetime-local'
+
+
 class CourseCreationForm(forms.Form):
     name = forms.CharField(label='Course name', max_length=100)
 
@@ -20,6 +26,11 @@ class AssignCreationForm(forms.Form):
             max_length=300
     )
     marks = forms.IntegerField(label='Max Marks',required=True)
+    deadline = forms.DateTimeField( #using the calender-time selection field of HTML.
+            widget= DateTimeInput(),
+            label='Deadline',
+            required=True
+    )
 
 
 class AssignmentSubmitForm(forms.Form):
