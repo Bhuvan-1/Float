@@ -23,6 +23,7 @@ def generate_code(): #function to generate random course code.
 
 #courses_home
 #added-Student an instructor ToDO list
+#added TA courses as well ... 24/11.
 def course_info(request):
 
     if not request.user.is_authenticated:
@@ -32,6 +33,7 @@ def course_info(request):
 
     Itodo_List = [] #list of TO-DO assignments for 'I'nstructors ['S' ==> students, 'I' ==> Instructors ]
     Stodo_List = [] #list of TO-DO of students
+    TAtodo_List = [] #for TA's
 
     now = datetime.datetime.now()
     for course in u.ins_courses.all():
@@ -56,17 +58,31 @@ def course_info(request):
                         break
                 if not submitted:
                     Stodo_List.append(assign)
+
+    for course in u.ta_courses.all():
+        for assign in course.assignment_set.all():
+            if now > assign.deadline:
+                graded=True
+                for sub in assign.filesubmission_set.all():
+                    if sub.corrected == 'NO':
+                        graded = False
+                        break
+                if not graded:
+                    TAtodo_List.append(assign)
             
 
     args = {
         'icourses': u.stud_courses.all(),
         'scourses': u.ins_courses.all(),
+        'Tcourses': u.ta_courses.all(),
         'Itodo': Itodo_List,
         'Stodo': Stodo_List,
+        'Ttodo': TAtodo_List,
     }
         
     return render(request,'courses/home.html',args)
 
+#created TA join code as well
 def create(request):
 
     if not request.user.is_authenticated:
@@ -78,11 +94,15 @@ def create(request):
         if form.is_valid():
             course_name = form.cleaned_data['name']
             code = generate_code()
+            TAcode = generate_code()
 
-            e = Course.objects.all().filter(joincode = code).count()
-            while e != 0:
+            e = Course.objects.all().filter(joincode__in = [code, TAcode] ).count()
+            n = Course.objects.all().filter(TAjoincode__in = [code, TAcode] ).count()
+            while e != 0 or n != 0:
                 code = generate_code()
-                e = Course.objects.all().filter(joincode = code).count()
+                TAcode = generate_code()
+                e = Course.objects.all().filter(joincode__in = [code, TAcode] ).count()
+                n = Course.objects.all().filter(TAjoincode__in = [code, TAcode] ).count()
 
             e = Course.objects.all().filter(name = course_name).count()
             if( e != 0): #Name already exists.
@@ -92,6 +112,7 @@ def create(request):
             c = Course.objects.create(instructor = request.user)
             c.name = course_name
             c.joincode = code
+            c.TAjoincode = TAcode
             c.save()
 
             return redirect('CourseHome')
@@ -102,6 +123,7 @@ def create(request):
     return render(request, 'courses/create.html', {'form': form, 'wrong': False})
 '---------------------------------------------------------------------------'
 
+#added TA join also.
 def join(request):
 
     if not request.user.is_authenticated:
@@ -114,14 +136,20 @@ def join(request):
 
             code = form.cleaned_data['code']
             e = Course.objects.all().filter(joincode = code).count()
+            n = Course.objects.all().filter(TAjoincode = code).count()
 
-            if( e == 0):  #incorrect course code.
+            if( e == 0 and n == 0):  #incorrect course code.
                 args = {'form': form, 'wrong': True}
                 return render(request, 'courses/join.html', args)
             
-            c = Course.objects.get(joincode = code)
-            c.students.add(request.user)
-            c.save()
+            if e != 0:
+                c = Course.objects.get(joincode = code)
+                c.students.add(request.user)
+                c.save()
+            elif n != 0:
+                c = Course.objects.get(TAjoincode = code)
+                c.TAs.add(request.user)
+                c.save()             
 
             return redirect('CourseHome')
 
@@ -133,20 +161,23 @@ def join(request):
 '--------------------------------------------------------------'
 
 #course_page
+#Addded TA check! .. 24/11
 def course(request,course_id):
     
     if not request.user.is_authenticated:
         return redirect('login')
     
     c = Course.objects.get(pk = course_id)
-    names = [ s.username for s in c.students.all() ]
+    Snames = [ s.username for s in c.students.all() ]
+    Tnames = [ s.username for s in c.TAs.all() ]
     uname = request.user.username
-    if uname not in names and uname != c.instructor.username:
+    if uname not in (Snames + Tnames) and uname != c.instructor.username:
         return redirect('CourseHome')
 
     args = {
         'Instructor': c.instructor,
         'Students': c.students.all(),
+        'TAs': c.TAs.all(),
         'course': c,
         'assignments': c.assignment_set.all(),
     }

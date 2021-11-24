@@ -15,7 +15,9 @@ class Course(models.Model):
     instructor = models.ForeignKey(User,on_delete=models.CASCADE,related_name='ins_courses') #assuming 1 instructor/course.
     name = models.CharField(max_length=128,default = '')
     students = models.ManyToManyField(User,related_name='stud_courses')
+    TAs = models.ManyToManyField(User,related_name='ta_courses')
     joincode = models.CharField(max_length=10,default = '')
+    TAjoincode = models.CharField(max_length=10,default = '')
 
     def __str__(self):
         return self.name

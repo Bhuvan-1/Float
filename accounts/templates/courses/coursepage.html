@@ -3,9 +3,14 @@
 {% block title %}CoursePage{% endblock %}
 
 {% block content %}
+
+<div style="display: flex; ">
+    <div style="float: left; margin: 0px 50px;"><h1>Student: {{ course.joincode }}</div></h1>
+    <h1> {{ course.name }}</h1>
+    <div style="float: right; margin: 0px 0px 0px 50px"><h1>TA: {{ course.TAjoincode }}</div></h1>
+</div>
+
 <div style="text-align: center;">
-    <h1 align="left" style="color: rgb(193, 8, 240); float: left;">{{ course.name }}</h1>
-    <h1 align = "right" style="float: right;">{{ course.joincode }}</h1>
     <a href ="{% url 'dashboard' %}"><button class="B1 button2">Dashboard</button></a>
     <a href ="{% url 'CourseHome' %}"><button class="B1 button1">CourseHome</button></a>
 </div>  
@@ -18,10 +23,31 @@
     </div>
 {% endif %}
 <br>
+
 {% for a in assignments %}
 <a href="{% url 'assign_page' course.pk a.pk %}">
     <button class = "button5">{{ a.name }}</button> 
 </a>
 {% endfor %}
+<br>
+<br>
+<br>
+<br>
+STUDENTS
+{% for s in Students %}
+    <h3>{{ s.username }}</h3>
+{% endfor %}
+<br>
+<br>
+<br>
+TAS
+{% for t in TAs %}
+    <h3>{{ t.username }}</h3>
+{% endfor %}
+<br>
+<br>
+<br>
+INSTRUCTOR
+<h2>{{ Instructor.username }}</h2>
 
 {% endblock %}

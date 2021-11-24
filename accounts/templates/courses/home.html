@@ -10,6 +10,8 @@
     <a href ="{% url 'CourseJoin' %}"><button class="B1 button1">JOIN</button></a>
 
 </div>  
+
+
 <hr style="height: 10px; background-color: aquamarine;">
 <div class="it">TEACHER</div>
 {% for course in scourses %}
@@ -18,6 +20,8 @@
 </a>
 {% endfor %}
 <hr style="height: 10px; background-color: aquamarine;">
+
+
 <div class="it">STUDENT</div>
 {% for course in icourses %}
 <a href="{% url 'coursepage' course.pk %}">
@@ -26,10 +30,25 @@
 {% endfor %}
 <hr style="height: 10px; background-color: aquamarine;">
 
+
+<div class="it">TA</div>
+{% for course in Tcourses %}
+<a href="{% url 'coursepage' course.pk %}">
+    <button class = "B2 button1">{{ course.name }}</button>
+</a>
+{% endfor %}
+<hr style="height: 10px; background-color: aquamarine;">
+
+
 <div class="it">
-    <h2>Grading:</h2>
+    <h2>Grading(I)</h2>
     {% for assign in Itodo %}
         <h2 style="color: orange;">{{ assign.name }}</h2>
+    {% endfor %}
+    <br>
+    <h2>Grading(T)</h2>
+    {% for assign in TAtodo %}
+        <h2 style="color: rgb(51, 255, 0);">{{ assign.name }}</h2>
     {% endfor %}
     <br>
     <h2>Submissions:</h2>
