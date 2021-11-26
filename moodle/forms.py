@@ -38,3 +38,14 @@ class ProfileChangeForm(UserChangeForm):
 		'first_name',
 		'last_name',
 		)
+
+
+class Messageform(forms.Form):
+    message = forms.CharField(
+        widget= forms.Textarea(
+            attrs={'style': 'border-color: orange;' 'width: 80%;' 'height: 400px' 'padding: 12px 20px;' 'border: 2px solid #ccc;' 'border-radius: 15px;''background-color: #f8f8f8;' }
+        ),
+        label='Message',
+        required=True,
+        max_length=300
+    )

@@ -24,6 +24,7 @@ def generate_code(): #function to generate random course code.
 #courses_home
 #added-Student an instructor ToDO list
 #added TA courses as well ... 24/11.
+#added percentages--to render corrctly....26/11.
 def course_info(request):
 
     if not request.user.is_authenticated:
@@ -35,8 +36,15 @@ def course_info(request):
     Stodo_List = [] #list of TO-DO of students
     TAtodo_List = [] #for TA's
 
+
+    PercI_List = [] #list of percentage of course completed.
+    PercS_List = []
+    PercT_List = []
+
     now = datetime.datetime.now()
     for course in u.ins_courses.all():
+        graded_count = 0
+        assign_count = 0
         for assign in course.assignment_set.all():
             if now > assign.deadline:
                 graded=True
@@ -46,9 +54,18 @@ def course_info(request):
                         break
                 if not graded:
                     Itodo_List.append(assign)
-
+                else:
+                    graded_count += 1
+            assign_count += 1
+        if assign_count == 0:
+            PercI_List.append(100)
+        else:
+            PercI_List.append(int((graded_count*100)/assign_count))
 
     for course in u.stud_courses.all():
+        print(1)
+        assign_count = 0
+        sub_count = 0
         for assign in course.assignment_set.all():
             if now < assign.deadline:
                 submitted=False
@@ -58,8 +75,25 @@ def course_info(request):
                         break
                 if not submitted:
                     Stodo_List.append(assign)
+                else:
+                    sub_count += 1
+            else:
+                submitted=False
+                for sub in assign.filesubmission_set.all():
+                    if sub.user.username == request.user.username:
+                        submitted = True
+                        break
+                if submitted:
+                    sub_count += 1
+            assign_count += 1
+        if assign_count == 0:
+            PercS_List.append(100)
+        else:
+            PercS_List.append(int((graded_count*100)/assign_count))
 
     for course in u.ta_courses.all():
+        graded_count = 0
+        assign_count = 0
         for assign in course.assignment_set.all():
             if now > assign.deadline:
                 graded=True
@@ -69,15 +103,34 @@ def course_info(request):
                         break
                 if not graded:
                     TAtodo_List.append(assign)
-            
+                else:
+                    graded_count += 1
+            assign_count += 1
+        if assign_count == 0:
+            PercT_List.append(100)
+        else:
+            PercT_List.append(int((graded_count*100)/assign_count))
+
+    for i in range(len(PercS_List)):
+        PercS_List[i] = str(PercS_List[i]) + '%'
+
+    for i in range(len(PercI_List)):
+        PercI_List[i] = str(PercI_List[i]) + '%'
+
+    for i in range(len(PercT_List)):
+        PercT_List[i] = str(PercT_List[i]) + '%'
+
 
     args = {
-        'icourses': u.stud_courses.all(),
-        'scourses': u.ins_courses.all(),
+        'scourses': u.stud_courses.all(),
+        'icourses': u.ins_courses.all(),
         'Tcourses': u.ta_courses.all(),
         'Itodo': Itodo_List,
         'Stodo': Stodo_List,
         'Ttodo': TAtodo_List,
+        'Perc_S': PercS_List,
+        'Perc_I': PercI_List,
+        'Perc_T': PercT_List,
     }
         
     return render(request,'courses/home.html',args)
@@ -162,6 +215,7 @@ def join(request):
 
 #course_page
 #Addded TA check! .. 24/11
+#added now time, to color the assignments.
 def course(request,course_id):
     
     if not request.user.is_authenticated:
@@ -180,6 +234,7 @@ def course(request,course_id):
         'TAs': c.TAs.all(),
         'course': c,
         'assignments': c.assignment_set.all(),
+        'nowtime': datetime.datetime.now(),
     }
     return render(request,'courses/coursepage.html',args)
 
@@ -350,3 +405,13 @@ def feedback(request,course_id,assign_id,sub_id):
 
 
     #CHANGE PASSWORD ETC..
+
+def grades(request,course_id):
+    return HttpResponse("hello")
+
+
+def participants(request,course_id):
+    return HttpResponse("hello")
+
+def forum(request,course_id):
+    return HttpResponse("hello")

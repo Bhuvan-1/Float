@@ -29,6 +29,8 @@ urlpatterns = [
     path('courses/',include('courses.urls')),
     path('profile_change/',views.profile_change,name = 'profile_change'),
     path('change_pass/',views.change_pass,name = 'change_pass'),
+    path('chat/',views.chat,name = 'chat'),
+    path('chat/<int:id1>/<int:id2>/',views.DM,name = 'DM'),
 ]
 
 if settings.DEBUG:

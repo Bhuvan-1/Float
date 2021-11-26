@@ -265,14 +265,14 @@
 =---------------------------------------------------*/
 
 
-/* ---header-------*/
+/* ---header------- AND TOP HYPER REFERENCES.*/
 
 
 
 
 body{
     margin: 0px;
-    background-color: #ecd9eb;
+    background-color: #f7ebdd;
 }
 
 .head{
@@ -309,6 +309,16 @@ body{
     padding: 0px;
 }
 
+.contL{
+    background-color: #04182c;
+    font-family:'Courier New', Courier, monospace;
+}
+
+.contP{
+    background-color: black;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
 .hov1{
     color: rgb(222, 255, 34);
 }
@@ -325,7 +335,7 @@ body{
 
 .hov2:hover{
     background-color: #488bf0;
-    color:rgb(0, 0, 0)
+    color:rgb(7, 7, 7)
 }
 
 .hov3{
@@ -341,9 +351,306 @@ body{
     background-color: #e358ff;
 }
 
+.hov4{
+    color: rgb(255, 170, 51);
+}
+
+.hov4:hover{
+    background-color:  rgb(222, 255, 34);
+    color: rgb(0, 0, 0);
+}
+
+
+.hov4:active{
+    background-color: rgb(255, 170, 51);
+}
+
+.hov8:hover{
+    background-color: #1aebe0;
+}
+
+.hov8:active{
+    background-color: #e62bec;
+}
+
+
+ /*------------------ TODO list----------------------------*/
+ 
+.Cbox{
+    border-style: solid ;
+    border-width: 0px ;
+    border-color: black;
+}
+
+.Cbox1{
+    background-color:#0E0B16 ;
+}
+
+.Cbox1:hover{
+    background-color: rgb(243, 239, 31);
+}
+
+.Cbox2:hover{
+    background-color: rgb(58, 111, 211);
+    color: #0E0B16;
+}
+
+
+.Cbox3:hover{
+    background-color: rgb(248, 61, 61);
+}
+
+.Cbox4:hover{
+    background-color: aquamarine;
+}
+
+.Cbox5:hover{
+    background-color:rgb(105, 31, 243);
+}
+
+.Cbox6:hover{
+    background-color: rgb(248, 61, 61);
+}
+
+.Cbox7:hover{
+    background-color: #49f044;
+}
+
+.Cbox7:hover>.triangle-up-small{
+    border-color: #49f044;
+}
+
+/*----------------COURE ICONS---------------------*/
+
+
+
+.course{
+    border: 0px solid rgb(0, 0, 0);
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    /* box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset; */
+    /* box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px; */
+
+    margin: 20px ;
+    border-radius: 10px;
+
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+
+    background-color: #f3f1f0
+
+}
+
+.triangle-up {
+	width: 0;
+	height: 0;
+	border-left: 25px solid transparent;
+	border-right: 25px solid transparent;
+	border-bottom: 50px solid rgb(96, 235, 78);
+}
+
+.Cbox1:hover>.triangle-up-small{
+    border-bottom-color:#49f044;
+}
+
+.triangle-up-small {
+	width: 0;
+	height: 0;
+	border-left: 14px solid transparent;
+	border-right: 14px solid transparent;
+	border-bottom: 28px solid #0E0B16;
+}
+
+.square {
+    height: 40px;
+    width: 40px;
+    /* background-color: #555; */
+    border: 8px solid rgb(243, 239, 31);
+}
+
+.circle {
+height: 40px;
+width: 40px;
+/* background-color: #555; */
+border: 8px solid rgb(248, 61, 61);
+border-radius: 50%;
+}
+
+
+.sideheadfont{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center;
+    margin: 0px;
+    border: 0px;
+
+    border-style: solid;
+
+    background-color: #566ef5;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(119, 77, 77, 0.19);
+
+}   
+
+.font1{
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.hov5:hover{
+    background-color: rgb(255, 170, 51);
+    color: #0E0B16;
+}
+
+.hov6{
+    background-color: #0b160c;
+    color: rgb(181, 12, 248);
+}
+
+.hov6:hover{
+    background-color: rgb(238, 20, 20);
+    color: #0E0B16;
+}
+
+
+.hov7{
+    background-color: #0b160c;
+    color: rgb(222, 255, 34);
+}
+
+.hov7:hover{
+    background-color: #49f044;
+    color: #0E0B16;
+}
+
+
+.sidebox{
+    width: 100%;
+    border: 0px solid ;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* background-color: #43f151; */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(119, 77, 77,0.19);
+    background-color: #15031a;
+
+}
+
+.sidebox:hover{
+    background-color: rgb(31, 5, 48);
+}
+
+.sidebox:hover> .font2{
+    color: rgb(0, 132, 255);
+}
+
+.font2{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 40px;
+    margin: 0px;
+    border: 0px;
+
+    /* color: #0E0B16; */
+    color: rgb(222, 255, 34);
+}
+
+.font3{
+    margin: 1px; 
+    color: rgb(67, 70, 75);
+}
+
+.font4{
+    margin: 1px; 
+    color: rgb(233, 33, 33);
+}
+
+.font5{
+    color: #c81aeb;
+}
+
+.font6{
+    color: rgb(67, 70, 75);
+}
+
+.font7{
+    color:rgb(96, 235, 78);
+}
+
+.font8{
+    color: rgb(255, 170, 51);
+}
+
+.font9{
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.hov9:hover{
+    color: #0b160c;
+    background-color: rgb(222, 255, 34);
+}
+
+.hov9{
+    background-color: #49f044;
+    color: #0E0B16;
+    border: 0px solid #0E0B16;
+}
+
+
+.hov5{
+    color: #15031a;
+    background-color: #566ef5;
+}
+
+.hov10{
+    background-color: rgb(255, 170, 51);
+    color: #15031a;
+}
+
+.hov10:hover{
+    background-color: rgb(222, 255, 34);
+}
+
+.hov11:hover{
+    color: #0b160c;
+    background-color: rgb(74, 237, 243);
+}
+
+.hov11{
+    background-color: #a91fe0;
+    color: #0E0B16;
+}
+
+
+.hov12{
+    background-color: #f44336;
+}
 
 
 
 
+/*--------------------chat--forums*---------------------*/
 
+.button7 {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 60px;
+    border-radius: 18px;
+    background-color: rgb(65, 240, 202);
+    border: solid 0px transparent;
+    color: #fff;
+    font-size: 40px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all .1s ease-in-out;
+    padding-top: 8px;
 
+    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  }
+.button7:hover {
+    background-color: #ecf011;
+    border-color: rgb(19, 17, 17);
+    transition: all .1s ease-in-out;
+    color: #0E0B16;
+}

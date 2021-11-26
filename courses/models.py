@@ -5,10 +5,10 @@ from django.db import models
 from django.contrib.auth.models import  User
 from django.db.models.deletion import CASCADE
 from django.db.models.fields import DateTimeField
+from django.db.models.fields.related import ForeignKey
 from django.db.models.signals import post_save
 
 import random
-
 
 class Course(models.Model):
 
@@ -51,22 +51,35 @@ class FileSubmission(models.Model):
 
 
 
-# class Instructor(models.Model):
-#     user = models.OneToOneField(User,on_delete=models.CASCADE)
+class Forum(models.Model):
+    course = models.OneToOneField(Course,on_delete=models.CASCADE)
+    Ins = models.ForeignKey(User,on_delete=models.CASCADE,related_name='ins_forums')
+    TAs = models.ManyToManyField(User,related_name='TA_forums')
+    studs = models.ManyToManyField(User,related_name='stud_forums')
 
-#     def __str__(self):
-#         return self.user.username
+#distingush types of mesages and give color.
 
-# class Student(models.Model):
+class Message(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    message = models.CharField(max_length=500,default='**')
+    time = models.DateField(auto_now_add = True)
 
-#     user = models.OneToOneField(User,on_delete=models.CASCADE)
+    forum = models.ForeignKey(Forum,on_delete=models.CASCADE)
 
-#     def __str__(self):
-#         return self.user.username
 
-'''when a course is created by instructor then a Instrucctor model instance si created. When a student
-is added to  acourse then a Student model is created and they are linked to each other and also 
-to th ecourse model'''
+
+class Chat(models.Model):
+    users = models.ManyToManyField(User,related_name = 'chats')
+
+
+
+class DM(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    message = models.CharField(max_length=500,default='**')
+    time = models.DateField(auto_now_add = True)
+
+    chat = models.ForeignKey(Forum,on_delete=models.CASCADE)
+
 
 '''USE SIGNALS'''
 #add app to the list. and migrations admin.py etc...
