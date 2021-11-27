@@ -26,6 +26,7 @@ class AssignCreationForm(forms.Form):
             max_length=300
     )
     marks = forms.IntegerField(label='Max Marks',required=True)
+    weightage = forms.IntegerField(label='Weightage',required=True)
     deadline = forms.DateTimeField( #using the calender-time selection field of HTML.
             widget= DateTimeInput(),
             label='Deadline',
@@ -46,3 +47,30 @@ class FeedbackForm(forms.Form):
         max_length=300
     )
     grade = forms.IntegerField(label='Grade',required=True)
+
+class ForumCreateForm(forms.Form):
+    name = forms.CharField(
+        widget = forms.TextInput(
+            attrs= {'style': 'border-color: orange;' 'width: 90%;' 'height: 10%' 'padding: 10px 20px;' 'border: 2px solid #ccc;' 'border-radius: 15px;''background-color: #f8f8f8;' }
+        ),
+        label = 'Forum Name',
+        required=True,
+        max_length=20
+    )
+
+CHOICES =(
+    ("1", "STUDENT"),
+    ("2", "TA"),
+)
+
+class UserRemoveForm(forms.Form):
+    username = forms.CharField(
+        widget = forms.TextInput(
+            attrs= {'style': 'border-color: orange;' 'width: 50%;' 'height: 20%' 'padding: 10px 20px;' 'border: 2px solid #ccc;' 'border-radius: 15px;''background-color: #81b0e0;' }
+        ),
+        label = 'username',
+        required=True,
+        max_length=50
+    )
+    role = forms.ChoiceField(choices = CHOICES)
+

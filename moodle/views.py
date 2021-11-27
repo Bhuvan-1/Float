@@ -92,39 +92,46 @@ def chat(request):
 
 	return render(request,'accounts/chat.html',args)
 
-def DM(request,id1,id2):
+def DirMsg(request,id1,id2):
 
 	usr1 = request.user
 	usr2 = User.objects.get(pk = id2)
 
 	S1 = usr1.chats.all()
 	S2 = usr2.chats.all()
-
 	S = S1 & S2
-
-	print(len(S))
-
-	# C = Chat.objects.all().filter()
-	# exists = False
-	# for chat in C:
-	# 	if usr1 in chat.users and usr2 in chat.users:
-	# 		exists = True
-	# 		break
 
 	if len(S) == 0:
 		C = Chat.objects.create()
 		C.users.add(usr1)
 		C.users.add(usr2)
 		C.save()
+	
+	S1 = usr1.chats.all()
+	S2 = usr2.chats.all()
+	S = S1 & S2
+	C = S[0]	
 
 	if request.method == 'POST':
 		form = Messageform(request.POST)
 		if form.is_valid():
-			return redirect(DM,id1,id2)
+			M = DM.objects.create(user = request.user,chat = C)
+			M.message = form.cleaned_data['message']
+
+			M.save()
+			
+			return redirect('DM',id1,id2)
 	else:
 		form = Messageform()
 
 	args = {
-		'form': form
+		'form': form,
+		'msgs': C.dm_set.all(),
+		'user2': usr2,
 	}
 	return render(request,'accounts/DM.html',args)
+
+
+#_________________________________________*****************
+def bot(request):
+	pass

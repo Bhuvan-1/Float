@@ -654,3 +654,208 @@ border-radius: 50%;
     transition: all .1s ease-in-out;
     color: #0E0B16;
 }
+
+
+
+
+.msg{
+    color: rgb(255, 255, 255);
+    text-align: left;
+    font-family:  Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 50;
+    font-size: 20px;
+    padding: 10px;
+    margin: 10px ;
+    width: auto;
+    font-style: normal;
+
+}
+
+.hov13{
+    background-color:#0E0B16;
+    color: #12eb86;
+}
+
+.hov13:hover{
+    background-color: rgb(24, 177, 248);
+    color: #0E0B16;
+}
+
+.hov13:hover>.msg{
+    color: #0E0B16;
+    font-size: 30px;
+}
+
+.hov14{
+    background-color: transparent;
+    color: #eea509;
+}
+
+.hov14:hover{
+    background-color: #15031a;
+    color: #eea509;
+}
+
+.hov13:hover>.hov14{
+    color: rgb(243, 243, 243);
+}
+
+
+
+
+.hov15{
+    background-color:#0E0B16;
+    color: #12eb86;
+}
+
+.hov15:hover{
+    background-color: rgb(236, 52, 52);
+    color: #0E0B16;
+}
+
+.hov15:hover>.msg{
+    color: #0E0B16;
+    font-size: 30px;
+}
+
+.hov16{
+    background-color: transparent;
+    color: rgb(222, 255, 34);
+}
+
+.hov16:hover{
+    background-color: #15031a;
+    color:rgb(222, 255, 34);
+}
+
+.hov15:hover>.hov16{
+    color: rgb(243, 243, 243);
+}
+
+.msg2{
+    text-align: center;
+}
+
+
+
+
+.hov17{
+    background-color:#0E0B16;
+    color: #12eb86;
+}
+
+.hov17:hover{
+    background-color: rgb(44, 241, 26);
+    color: #0E0B16;
+}
+
+.hov17:hover>.msg{
+    color: #0E0B16;
+    font-size: 30px;
+}
+
+.hov18{
+    background-color: transparent;
+    color: rgb(222, 255, 34);
+}
+
+.hov18:hover{
+    background-color: #15031a;
+    color:rgb(222, 255, 34);
+}
+
+.hov17:hover>.hov18{
+    color: rgb(243, 243, 243);
+}
+
+
+/*-----disbale enable------*/
+
+.hov20{
+    background-color: red;
+    color: #0E0B16;
+}
+
+.hov20:hover{
+    background-color: #def322;
+    color: #fc3939;
+}
+
+.hov20:active{
+    background-color: red;
+    color: #0E0B16;
+}
+
+
+.hov20{
+    background-color: red;
+    color: #0E0B16;
+}
+
+.hov20:hover{
+    background-color: #def322;
+    color: #fc3939;
+}
+
+.hov20:active{
+    background-color: red;
+    color: #0E0B16;
+}
+
+
+.hov21{
+    background-color: rgb(44, 241, 26);
+    color: #0E0B16;
+}
+
+.hov21:hover{
+    background-color: #def322;
+    color: #000000;
+}
+
+.hov21:active{
+    background-color: rgb(51, 255, 0);
+    color: #0E0B16;
+}
+
+
+
+.assignment2{
+    color: rgb(0, 119, 255);
+    border: 0px solid rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.822);
+    border-radius: 35px;
+    text-align: center;
+    font-family:  Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 500;
+    font-size: 30px;
+    padding: 15px;
+    margin: 20px 15% 20px 15% ;
+    width: 70%;
+
+
+
+    
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 
+}
+
+
+.button9 {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 60px;
+    border-radius: 18px;
+    background-color: #d9ee1c;
+    border: solid 1px transparent;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all .1s ease-in-out;
+  }
+.button9:hover {
+    background-color: rgb(197, 27, 240);
+    border-color: rgb(19, 17, 17);
+    transition: all .1s ease-in-out;
+}

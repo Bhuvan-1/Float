@@ -13,5 +13,11 @@ urlpatterns = [
     path('<int:course_id>/assign/<int:assign_id>/feedback/<int:sub_id>',views.feedback,name ='feedback'),
     path('<int:course_id>/grades',views.grades,name ='grades'),
     path('<int:course_id>/participants',views.participants,name ='participants'),
-    path('<int:course_id>/forum',views.forum,name ='forum'),        
+    path('<int:course_id>/<int:forum_id>/',views.forum,name ='forum'),
+    path('disable/<int:course_id>/<int:forum_id>/',views.disable,name = 'disable'),
+    path('remove/<int:course_id>/<int:user_id>',views.remove,name = 'remove'),   
+    path('<int:course_id>/assign/<int:assign_id>/submissions/filefeedback',views.file_feedback,name ='file_feedback'),
+    path('<int:course_id>/assign/<int:assign_id>/submissions/autograde',views.autograde,name ='autograde'),
+    path('<int:course_id>/tasettings/',views.Settings,name = 'TA_settings'),
+        
 ]

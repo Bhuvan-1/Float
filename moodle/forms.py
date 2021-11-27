@@ -43,7 +43,7 @@ class ProfileChangeForm(UserChangeForm):
 class Messageform(forms.Form):
     message = forms.CharField(
         widget= forms.Textarea(
-            attrs={'style': 'border-color: orange;' 'width: 80%;' 'height: 400px' 'padding: 12px 20px;' 'border: 2px solid #ccc;' 'border-radius: 15px;''background-color: #f8f8f8;' }
+            attrs={'style': 'border-color: orange;' 'width: 80%;' 'height: 400px' 'padding: 12px 20px;' 'border: 4px solid #ccc;' 'border-radius: 15px;' 'background-color: #f8f8f8;' 'font-size: 20px;' 'font-family: Verdana, Geneva, Tahoma, sans-serif;' }
         ),
         label='Message',
         required=True,

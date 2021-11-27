@@ -83,17 +83,40 @@
 
     <div class="Cbox" style="width: 20%; height: auto; border-left-width: 5px ; background-color: rgb(172, 236, 186);">
 
-        <a href = "#" class="sideheadfont font1 hov5" style="font-size:x-large; padding: 10px; border-width: 0px 5px 5px 5px; margin-bottom: 5px; display: block; text-decoration: none;">
+        <a href = "{% url 'participants' course.pk %}" class="sideheadfont font1 hov5" style="font-size:x-large; padding: 10px; border-width: 0px 5px 5px 5px; margin-bottom: 5px; display: block; text-decoration: none;">
             <h2 style="margin: 0px;">Participants</h2>
         </a>
 
-        <a href = "#" class="sideheadfont font1 hov9" style="font-size:x-large; padding: 10px; border-width: 5px 5px 5px 5px; display: block; text-decoration: none; margin-bottom: 5px;">
+        <a href = "{% url 'grades' course.pk %}" class="sideheadfont font1 hov9" style="font-size:x-large; padding: 10px; border-width: 5px 5px 5px 5px; display: block; text-decoration: none; margin-bottom: 5px;">
             <h1 style="margin: 0px;">Grades</h1>
         </a>
 
-        <a href = "#" class="sideheadfont font1 hov10 hov12" style="font-size:x-large; padding: 10px; border-width: 5px 5px 5px 5px; display: block; text-decoration: none; margin-bottom: 5px;">
-            <h1 style="margin: 0px;">Forum</h1>
-        </a>
+        <div class="sideheadfont font5 hov6">
+            <h1  style="margin-top: 60px;">Forums</h1>
+        </div>
+
+
+        {% for forum in forums %}
+            <a href = "{% url 'forum' course.pk forum.pk %}" class="sideheadfont font1 hov10 hov12" style="font-size:x-large; padding: 10px; border-width: 5px 5px 5px 5px; display: block; text-decoration: none; margin-bottom: 5px;">
+                <h2 style="margin: 0px;">{{ forum.name }}</h2>
+            </a>
+        {% endfor %}
+        {% if user.username == Instructor.username %}
+            <form method="post">
+                {% csrf_token %}
+            
+            {% for field in form %}
+                <div style="text-align: center; margin: 20px 5% 5px;">
+                {{field}}
+                </div>
+            {% endfor %}
+            
+            <div style="text-align: center; margin: 0px;">
+                <button type="submit" class="B1 button4" style="text-align: center;">Create New forum</button>
+            </div>
+            
+            </form>
+        {% endif %}
 
     </div>
 
@@ -110,23 +133,5 @@
 </div>
 
 
-
-
-STUDENTS
-{% for s in Students %}
-    <h3>{{ s.username }}</h3>
-{% endfor %}
-<br>
-<br>
-<br>
-TAS
-{% for t in TAs %}
-    <h3>{{ t.username }}</h3>
-{% endfor %}
-<br>
-<br>
-<br>
-INSTRUCTOR
-<h2>{{ Instructor.username }}</h2>
 
 {% endblock %}

@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.db.models.signals import post_save
 # Create your models here.
 
 from django.contrib.auth.models import  User
@@ -31,6 +31,8 @@ class Assignment(models.Model):
     course = models.ForeignKey(Course,on_delete=models.CASCADE)
     maxmarks = models.IntegerField(default=100)
     deadline = models.DateTimeField(blank=False) #need to set while creating assign.
+    weightage = models.IntegerField(default=0)
+    feedfile = models.FileField(upload_to='feedback', blank = True)
 
     def __str__(self):
         return self.name
@@ -47,23 +49,21 @@ class FileSubmission(models.Model):
 
 
     def __str__(self):
-        return self.user.username + self.file_name + self.assignment.name
+        return self.user.username +'_'  + self.file_name + '_' + self.assignment.name
 
 
 
 class Forum(models.Model):
-    course = models.OneToOneField(Course,on_delete=models.CASCADE)
-    Ins = models.ForeignKey(User,on_delete=models.CASCADE,related_name='ins_forums')
-    TAs = models.ManyToManyField(User,related_name='TA_forums')
-    studs = models.ManyToManyField(User,related_name='stud_forums')
+    name = models.CharField(max_length=20,default='FORUM')
+    course = models.ForeignKey(Course,on_delete=models.CASCADE)
+    enabled = models.CharField(max_length=4,default='YES')#***********************************************************
 
 #distingush types of mesages and give color.
 
 class Message(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     message = models.CharField(max_length=500,default='**')
-    time = models.DateField(auto_now_add = True)
-
+    time = models.DateTimeField(auto_now_add = True)
     forum = models.ForeignKey(Forum,on_delete=models.CASCADE)
 
 
@@ -76,10 +76,13 @@ class Chat(models.Model):
 class DM(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     message = models.CharField(max_length=500,default='**')
-    time = models.DateField(auto_now_add = True)
+    time = models.DateTimeField(auto_now_add = True)
+    chat = models.ForeignKey(Chat,on_delete=models.CASCADE)
 
-    chat = models.ForeignKey(Forum,on_delete=models.CASCADE)
 
+# post_save.connect(create_forum,sender = Course)
+
+# def create_forum(sender,**kwargs):
 
 '''USE SIGNALS'''
 #add app to the list. and migrations admin.py etc...
