@@ -8,6 +8,7 @@ from moodle.forms import SignupForm,ProfileChangeForm,Messageform
 import requests
 
 from courses.models import Chat, DM
+from . import clibot
 
 def dashboard(request):
 
@@ -88,6 +89,7 @@ def chat(request):
 	args = {
 		'users': u,
 		'l':[1,2,3,4,5,6,7,8,9],
+		'bot': User.objects.get(username = 'Bot'),
 	}
 
 	return render(request,'accounts/chat.html',args)
@@ -134,4 +136,42 @@ def DirMsg(request,id1,id2):
 
 #_________________________________________*****************
 def bot(request):
-	pass
+	usr1 = request.user
+	usr2 = User.objects.get(username = 'Bot')
+
+	S1 = usr1.chats.all()
+	S2 = usr2.chats.all()
+	S = S1 & S2
+
+	if len(S) == 0:
+		C = Chat.objects.create()
+		C.users.add(usr1)
+		C.users.add(usr2)
+		C.save()
+	
+	S1 = usr1.chats.all()
+	S2 = usr2.chats.all()
+	S = S1 & S2
+	C = S[0]	
+
+	if request.method == 'POST':
+		form = Messageform(request.POST)
+		if form.is_valid():
+			M = DM.objects.create(user = request.user,chat = C)
+			M.message = form.cleaned_data['message']
+			M.save()
+
+			R = DM.objects.create(user = usr2,chat = C)
+			R.message = clibot.reply(M.message,usr1.pk)
+			R.save()
+			
+			return redirect('cli')
+	else:
+		form = Messageform()
+
+	args = {
+		'form': form,
+		'msgs': C.dm_set.all(),
+		'user2': usr2,
+	}
+	return render(request,'accounts/DM.html',args)

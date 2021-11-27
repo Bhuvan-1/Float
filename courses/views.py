@@ -1,3 +1,12 @@
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+from io import BytesIO
+import base64
+
+
+
 from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
 from django.db.models.signals import post_save
@@ -8,7 +17,6 @@ from .forms import AssignCreationForm, AssignmentSubmitForm, CourseCreationForm 
 from .models import Assignment, Course, FileSubmission, Forum, Message #, Student , Instructor
 import random
 import datetime
-import matplotlib.pyplot as plt
 
 from moodle.forms import Messageform
 # Create your views here.
@@ -541,7 +549,7 @@ def participants(request,course_id):
             elif role == '2':
                 if not U in c.TAs.all():
                     c.TAs.add(U)
-            form = UserRemoveForm()
+            return redirect('participants',course_id)
     else:
         form = UserRemoveForm()
 
@@ -652,9 +660,24 @@ def grades(request,course_id):
     if uname not in (Tnames + Snames) and uname != c.instructor.username:
         return redirect('CourseHome')
 
+    l = []
+    for a in c.assignment_set.all():
+        for sub in a.filesubmission_set.all():
+            if sub.corrected == 'YES':
+                l.append(sub.grade)
+    
+    plt.hist(l)
+    plt.show()
+
+
+    buf = BytesIO()
+    plt.savefig(buf, format='png', dpi=300)
+    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+    buf.close()
 
     args = {
-        'course': c
+        'course': c,
+        'image_base64': image_base64
     }
     return render(request,'courses/grades.html',args)
 

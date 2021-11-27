@@ -859,3 +859,32 @@ border-radius: 50%;
     border-color: rgb(19, 17, 17);
     transition: all .1s ease-in-out;
 }
+
+
+.button10 {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 60px;
+    border-radius: 18px;
+    background-color: rgb(212, 45, 59);
+    border: solid 0px transparent;
+    color: #fff;
+    font-size: 40px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all .1s ease-in-out;
+    padding-top: 8px;
+
+    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  }
+.button10:hover {
+    background-color: #8411f0;
+    border-color: rgb(19, 17, 17);
+    transition: all .1s ease-in-out;
+    color: #0E0B16;
+}
+

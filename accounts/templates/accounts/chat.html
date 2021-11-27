@@ -22,15 +22,27 @@
 </div>
 <div style="text-align: center;">
     <h1 style="font-family: Verdana, Geneva, Tahoma, sans-serif; align-self: center; color: rgb(247, 34, 158);"> Chat with other Users!</h1>
+
+<br><br>
+
+<a href = "{% url 'cli'%}">
+    <div class="B1 button10" >
+        CLI BOT
+    </div>
+</a>
+
+<br>
+<br>
 </div>
 
 {% for u in users %}
-    {% if u != user %}
-        <a href = "{% url 'DM' user.pk u.pk %}">
-            <div class="B1 button7">
-                {{ u.username }}
-            </div>
-        </a>
+    {% if u.username == 'Bot' %}
+    {% elif u != user %}
+    <a href = "{% url 'DM' user.pk u.pk %}">
+        <div class="B1 button7">
+            {{ u.username }}
+        </div>
+    </a>
     {% endif %}
 {% endfor %}
 
