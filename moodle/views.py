@@ -162,6 +162,9 @@ def bot(request):
 			M.save()
 			
 
+			clean = M.message.replace(" ",'')
+			clean = clean.replace('\n','')
+			clean = clean.replace('\r','')
 			if M.message.lower() == 'clear' or M.message == 'clean':
 				for msg in C.dm_set.all():
 					msg.delete()
