@@ -63,6 +63,12 @@ CHOICES =(
     ("2", "TA"),
 )
 
+PERMISNS =(
+    ("1", "NO"),
+    ("2", "YES"),
+)
+
+
 class UserRemoveForm(forms.Form):
     username = forms.CharField(
         widget = forms.TextInput(
@@ -73,4 +79,9 @@ class UserRemoveForm(forms.Form):
         max_length=50
     )
     role = forms.ChoiceField(choices = CHOICES)
+
+class TaPermissionForm(forms.Form):
+    assign_create = forms.ChoiceField(choices=PERMISNS,label='Create Assignment',required=True)
+    forum_create = forms.ChoiceField(choices=PERMISNS,label='Create Forum',required=True)
+    add_users = forms.ChoiceField(choices=PERMISNS,label='Add Users',required=True)
 

@@ -13,4 +13,6 @@ def reply(question,user_id):
             ans += i.name
             ans += ' , '
         return 'Courses:  ' + ans + '\' ]'
+    else:
+        return 'NULL'
 

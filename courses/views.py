@@ -1,11 +1,12 @@
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 
 from io import BytesIO
 import base64
 
-
+import numpy as  np
 
 from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
@@ -13,8 +14,8 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 
 import courses
-from .forms import AssignCreationForm, AssignmentSubmitForm, CourseCreationForm , CourseJoinForm, FeedbackForm,ForumCreateForm, UserRemoveForm
-from .models import Assignment, Course, FileSubmission, Forum, Message #, Student , Instructor
+from .forms import AssignCreationForm, AssignmentSubmitForm, CourseCreationForm , CourseJoinForm, FeedbackForm,ForumCreateForm, TaPermissionForm, UserRemoveForm
+from .models import Assignment, Course, FileSubmission, Forum, Message, TA_Permission #, Student , Instructor
 import random
 import datetime
 
@@ -187,6 +188,7 @@ def create(request):
 '---------------------------------------------------------------------------'
 
 #added TA join also.
+#TA  PERMISSIONS ALSO.
 def join(request):
 
     if not request.user.is_authenticated:
@@ -212,7 +214,10 @@ def join(request):
             elif n != 0:
                 c = Course.objects.get(TAjoincode = code)
                 c.TAs.add(request.user)
-                c.save()             
+                c.save()
+
+                P = TA_Permission.objects.create(user = request.user,course = c)
+                P.save()             
 
             return redirect('CourseHome')
 
@@ -227,6 +232,7 @@ def join(request):
 #Addded TA check! .. 24/11
 #added now time, to color the assignments.
 #added forum craetion form.
+#TA PERMISSIONS/.
 def course(request,course_id):
     
     
@@ -252,6 +258,16 @@ def course(request,course_id):
     if uname not in (Snames + Tnames) and uname != c.instructor.username:
         return redirect('CourseHome')
 
+    TA_CA = 'NO'
+    TA_CF = 'NO'
+    if uname in Tnames:
+        Q = TA_Permission.objects.all().filter(user = request.user,course = c)
+        P = Q[0]
+        if P.assign_create == 'YES':
+            TA_CA = 'YES'
+        if P.forum_create == 'YES':
+            TA_CF = 'YES'
+
     args = {
         'Instructor': c.instructor,
         'Students': c.students.all(),
@@ -261,6 +277,8 @@ def course(request,course_id):
         'nowtime': datetime.datetime.now(),
         'form': form,
         'forums': c.forum_set.all(),
+        'TA_CA': TA_CA,
+        'TA_CF': TA_CF,
     }
     return render(request,'courses/coursepage.html',args)
 
@@ -333,6 +351,8 @@ def assign(request,course_id,assign_id):
 
             if FileSubmission.objects.filter(user = request.user,assignment = a).exists():#resubmission.
                 s = FileSubmission.objects.get(user = request.user,assignment = a)
+                s.corrected = 'NO'
+                s.grade = -1
             else:
                 s = FileSubmission.objects.create(user = request.user, assignment = a)
             if s_file:
@@ -409,12 +429,79 @@ def submissions(request,course_id,assign_id):
                 return redirect('submissions',course_id,assign_id)
     else:
         form = AssignmentSubmitForm()
+
+    grading_done = True
+    for sub in a.filesubmission_set.all():
+        if sub.corrected == 'NO':
+            grading_done = False
+            break
+
+    marks = assign_marks_array(c,a)
+
+    min_marks = np.amin(marks)
+    max_marks = np.amax(marks)
+    cap = a.maxmarks
+
+    M_mean = marks.mean()
+    M_sd = marks.std()
+    M_var = M_sd*M_sd
+
+    if True:
+        ax = plt.figure().gca()
+        ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+        plt.hist(marks,bins = int(cap/10),edgecolor = 'k',linewidth = 2,color='blue',alpha = 0.68,label='Marks')
+        plt.xlabel('Whole Marks Range',fontsize = 15)
+        plt.ylabel('Frequency',fontsize = 15)
+        plt.title('Histogram of obtained Marks, Mean',fontsize = 18)
+        plt.xlim([-10,cap+10])
+        plt.grid(axis='y', alpha=0.5)
+        plt.axvline(marks.mean(), color= '#01153E', linestyle='dashed', linewidth=2.5,label = 'mean')
+        ax.legend(loc='lower center', bbox_to_anchor=(0.5, 0.1),
+            ncol=3, fancybox=True, shadow=True)
+
+        
+
+        buf = BytesIO()
+        plt.savefig(buf, format='png', dpi=300)
+        histm = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+        buf.close()
+
+        plt.clf()
+
+    if True:
+        ax = plt.figure().gca()
+        ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+        plt.hist(marks,bins = int(cap/10),edgecolor = 'k',linewidth = 2,color='r',alpha = 0.7,label='Marks')
+        plt.xlabel('Obtained Marks Range',fontsize = 15)
+        plt.ylabel('Frequency',fontsize = 15)
+        plt.title('Histogram of obtained Marks, Mean',fontsize = 18)
+        plt.xlim([min_marks-5,max_marks+5])
+        plt.grid(axis='y', alpha=0.5)
+        plt.axvline(marks.mean(), color= 'k', linestyle='dashed', linewidth=2.5,label = 'mean')
+        ax.legend(loc='lower center', bbox_to_anchor=(0.5, 0.1),
+            ncol=3, fancybox=True, shadow=True)
+
+        
+        buf = BytesIO()
+        plt.savefig(buf, format='png', dpi=300)
+        histv = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+        buf.close()
+
+        plt.clf()
+
                 
     args = {
         'assign': a,
         'course': c,
         'submissions': list(a.filesubmission_set.all()),
         'form': form,
+        'nowtime': datetime.datetime.now(),
+        'GRADED': grading_done,
+        'histv':histv,
+        'histm':histm,
+        'mean': round(M_mean,2),
+        'sd': round(M_sd,2),
+        'var': round(M_var,2),
     }
     return render(request,'courses/submissions.html',args)
 
@@ -427,7 +514,11 @@ def feedback(request,course_id,assign_id,sub_id):
         return redirect('login')
 
     uname = request.user.username
-    if uname != c.instructor.username:
+
+    Snames = [ s.username for s in c.students.all() ]
+    Tnames = [ s.username for s in c.TAs.all() ]
+    uname = request.user.username
+    if uname not in Tnames and uname != c.instructor.username:
         return redirect('CourseHome')
 
 
@@ -549,6 +640,8 @@ def participants(request,course_id):
             elif role == '2':
                 if not U in c.TAs.all():
                     c.TAs.add(U)
+                    P = TA_Permission.objects.create(user = U,course = c)
+                    P.save()
             return redirect('participants',course_id)
     else:
         form = UserRemoveForm()
@@ -557,13 +650,22 @@ def participants(request,course_id):
     IsINS = 'NO'
     if uname == c.instructor.username:
         IsINS = 'YES'
+
+    TA_Perm = 'NO'
+    if uname in Tnames:
+        Q = TA_Permission.objects.all().filter(user = request.user,course = c)
+        P = Q[0]
+        if P.add_students == 'YES':
+            TA_Perm = 'YES'
+
     args = {
         'course':   c,
         'Students': c.students.all(),
         'TAs':  c.TAs.all(),
         'Ins':  c.instructor,
         'IsINS':    IsINS,
-        'form': form
+        'form': form,
+        'TA_Perm': TA_Perm
     }
     return render(request,'courses/participants.html',args)
 
@@ -587,6 +689,9 @@ def remove(request,course_id,user_id):
         C.students.remove(U)
     if U in TAs:
         C.TAs.remove(U)
+        if TA_Permission.objects.all().filter(user = U,course = C).count() != 0:
+            P = TA_Permission.objects.all().filter(user = U,course = C)[0]
+            P.delete()
     
     return redirect('participants',course_id)
 
@@ -645,6 +750,44 @@ def give_feedback(course,assign):
 
                 sub.save()
 
+def Settings(request,course_id,user_id):
+    c = Course.objects.get(pk = course_id )
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    uname = request.user.username
+    if uname != c.instructor.username:
+        return redirect('CourseHome')
+
+    ta = User.objects.get(pk = user_id)
+    Q = ta.ta_permission_set.all().filter(course = c)
+    P = Q[0]
+
+    if request.method == 'POST':
+        form = TaPermissionForm(request.POST)
+        if form.is_valid():
+            a = form.cleaned_data['assign_create']
+            f = form.cleaned_data['forum_create']
+            u = form.cleaned_data['add_users']
+
+            P.assign_create = 'YES' if a == '2' else 'NO'
+            P.forum_create = 'YES' if f == '2' else 'NO'
+            P.add_students = 'YES' if u == '2' else 'NO'
+            P.save()
+
+            return redirect('TA_settings',course_id,user_id)
+    else:
+        form = TaPermissionForm()
+
+    args = {
+        'course': c,
+        'P': P,
+        'ta': ta,
+        'form': form
+    }
+    return render(request,'courses/settings.html',args)
+
 #__________________________________________________***************
 def grades(request,course_id):
     c = Course.objects.get(pk = course_id )
@@ -660,38 +803,546 @@ def grades(request,course_id):
     if uname not in (Tnames + Snames) and uname != c.instructor.username:
         return redirect('CourseHome')
 
-    l = []
-    for a in c.assignment_set.all():
-        for sub in a.filesubmission_set.all():
+    Anames = [ s.name for s in c.assignment_set.all() ]
+    nowtime = datetime.datetime.now()
+    if uname in Snames:
+        Marks = []
+        for assign in c.assignment_set.all():
+            l = [assign]
+            str = 'OVER' if (nowtime > assign.deadline) else 'RUNNING'
+            l.append(str)
+            Subnames = [sub.user.username for sub in assign.filesubmission_set.all() ]
+            if uname in Subnames:
+                mysub = assign.filesubmission_set.get(user = request.user)
+                if mysub.corrected == 'YES':
+                    l.append(mysub.grade)
+                    l.append('GRADED')
+                else:
+                    l.append(0)
+                    l.append('NOT GRADED')
+            else:
+                l.append(0)
+                l.append('NOT SUBMITTED')
+            frac = max(mysub.grade,0)/assign.maxmarks
+            l.append(round(frac*100,2))
+            l.append(round(frac*assign.weightage,2))
+            Marks.append(l)
+        m = 0
+        t = 0
+        for e in Marks:
+            m += e[5]
+            t += e[0].weightage
+
+
+        percs = [m[4] for m in Marks]
+        grades = [m[5] for m in Marks]
+        weights = [m[0].weightage for m in Marks]
+        
+        #------------------------totals-------------
+        plt.plot(grades,color = 'orange',marker = "o",markersize = 10)
+        plt.xlabel('Assignments',fontsize = 15)
+        plt.ylabel('Marks in the Assignment',fontsize = 14)
+        plt.title('Marks in all Assignments',fontsize = 16)
+        plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+        plt.xticks([i for i in range(len(Anames))],Anames)
+
+        buf = BytesIO()
+        plt.savefig(buf, format='png', dpi=300)
+        graphM = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+        buf.close()
+
+        plt.clf()
+
+        #----------percs
+        plt.plot(percs,color = 'darkviolet',marker = "o",markersize = 10)
+        plt.xlabel('Assignments',fontsize = 15)
+        plt.ylabel('% Marks in the Assignment',fontsize = 14)
+        plt.title('Percentage Marks in all Assignments',fontsize = 16)
+        plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+        plt.xticks([i for i in range(len(Anames))],Anames)
+
+        buf = BytesIO()
+        plt.savefig(buf, format='png', dpi=300)
+        graphP = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+        buf.close()
+
+        plt.clf()
+
+        ZZ = cumulative_per_total(grades,percs,weights)
+        #----------totals cumulative---------
+        plt.plot(ZZ[0],color = 'deepskyblue',marker = "o",markersize = 10)
+        plt.xlabel('Assignments',fontsize = 15)
+        plt.ylabel('Course Total till that Assignment',fontsize = 14)
+        plt.title('Progress of Course Total',fontsize = 16)
+        plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+        plt.xticks([i for i in range(len(Anames))],Anames)
+
+        buf = BytesIO()
+        plt.savefig(buf, format='png', dpi=300)
+        HM = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+        buf.close()
+
+        plt.clf()
+
+        #----------percs cumulative---------
+        plt.plot(ZZ[1],color = 'fuchsia',marker = "o",markersize = 10)
+        plt.xlabel('Assignments',fontsize = 15)
+        plt.ylabel('Course % till that Assignment',fontsize = 14)
+        plt.title('Progress of Course Total %',fontsize = 16)
+        plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+        plt.xticks([i for i in range(len(Anames))],Anames)
+
+        buf = BytesIO()
+        plt.savefig(buf, format='png', dpi=300)
+        HP = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+        buf.close()
+
+        plt.clf()
+
+        Corr_data = corrected_data(c)
+        Totals_C =  total_data(Corr_data,len(Anames),c)[1]
+
+
+        mean = Totals_C[-3]
+        sd = Totals_C[-2]
+
+        print(mean)
+        print(sd)
+        print()
+        WARN = 'NO'
+        if ZZ[1][-1] < (mean - sd):
+            WARN = 'YES'
+
+        args = {
+            'INSrTA': False,
+            'course': c,
+            'Marks': Marks,
+            'nowtime': nowtime,
+            'total': [round((m*100)/t,2),t,round(m,2)],
+            'GM':graphM,
+            'GP':graphP,
+            'HM':HM,
+            'HP':HP,
+            'warn':WARN,
+        }
+        return render(request,'courses/grades.html',args)
+
+    else:
+        A = c.assignment_set.all()
+        Anames = [ a.name for a in A ]
+        
+        Data = nice_data(c)
+        Raw_data = raw_data(c)
+        Corr_data = corrected_data(c)
+
+        list_raw_data = Raw_data.tolist()
+        Row_Data = Data.tolist()
+        list_corr_data = Corr_data.tolist()
+
+        nice = []
+        for i in range(len(Snames)):
+            row = [Snames[i]]
+            row = row + Row_Data[i]
+            nice.append(row)
+        #print(nice)
+
+        raw = []
+        for i in range(len(Snames)):
+            row = [Snames[i]]
+            row = row + list_raw_data[i]
+
+            cleaned = map(lambda x: '--' if x == -2 else x,row)
+            raw.append(list(cleaned))
+        #print(raw)
+
+        corrected = []
+        for i in range(len(Snames)):
+            row = [Snames[i]]
+            row = row + list_corr_data[i]
+            corrected.append(row)
+        #print(corrected)
+
+        ZZ = total_data(Data,len(Anames),c,False)
+        Indivs_U = ZZ[0]
+
+        ZZ = total_data(Corr_data,len(Anames),c)
+        Indivs_C = ZZ[0]
+        Totals_C = ZZ[1]
+
+        Cumulatives =[ [] for i in range(len(Snames)+4) ]
+        for i in range(1,len(Anames)+1):
+            ZZ = total_data(Corr_data,i,c)
+            TT = ZZ[1]
+            for j in range(len(Snames)+4):
+                Cumulatives[j].append(TT[j])
+            
+
+        marks = Totals_C[0:len(Snames)]
+        cap = int(Totals_C[-4])
+        #------plotting-------#
+        if True:
+            ax = plt.figure().gca()
+            ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+            plt.hist(marks,bins = int(cap/10),edgecolor = 'k',linewidth = 2,color='blue',alpha = 0.68,label='Marks')
+            plt.xlabel('Whole Marks Range',fontsize = 15)
+            plt.ylabel('Frequency| num of students',fontsize = 15)
+            plt.title('Histogram of Course Totals, Mean',fontsize = 18)
+            plt.xlim([-10,cap+10])
+            plt.grid(axis='y', alpha=0.6)
+            plt.axvline(np.array(marks).mean(), color= '#01153E', linestyle='dashed', linewidth=2.5,label = 'mean')
+            ax.legend(loc='lower center', bbox_to_anchor=(0.5, 0.1),
+                ncol=3, fancybox=True, shadow=True)
+
+        
+
+            buf = BytesIO()
+            plt.savefig(buf, format='png', dpi=300)
+            histTot = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+            buf.close()
+
+            plt.clf()
+
+        if True:
+            Stat_array = np.array(Indivs_C)
+
+            #-------------------mean
+            plt.plot(Stat_array[:,0],color = 'b',marker = "o",markersize = 10)
+            plt.xlabel('Assignments',fontsize = 15)
+            plt.ylabel('Mean of each Assignment',fontsize = 14)
+            plt.title('Comparison of MEAN of all assignments',fontsize = 16)
+            plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+            plt.xticks([i for i in range(len(Anames))],Anames)
+
+            buf = BytesIO()
+            plt.savefig(buf, format='png', dpi=300)
+            graphAM = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+            buf.close()
+
+            plt.clf()
+
+            #----------------std dev
+            plt.plot(Stat_array[:,1],color = 'red',marker = "o",markersize = 10)
+            plt.xlabel('Assignments',fontsize = 15)
+            plt.ylabel('Stand. deviation of each Assignment',fontsize = 14)
+            plt.title('Comparison of ST DEV of all assignments',fontsize = 16)
+            plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+            plt.xticks([i for i in range(len(Anames))],Anames)
+
+            buf = BytesIO()
+            plt.savefig(buf, format='png', dpi=300)
+            graphAS = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+            buf.close()
+
+            plt.clf()
+
+            #---------------variance
+            plt.plot(Stat_array[:,2],color = 'green',marker = "o",markersize = 10)
+            plt.xlabel('Assignments',fontsize = 15)
+            plt.ylabel('Variance of each Assignment',fontsize = 14)
+            plt.title('Comparison of VARIANCE of all assignments',fontsize = 16)
+            plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+            plt.xticks([i for i in range(len(Anames))],Anames)
+
+            buf = BytesIO()
+            plt.savefig(buf, format='png', dpi=300)
+            graphAV = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+            buf.close()
+
+            plt.clf()
+
+            #------------------all in a single graph.
+            plt.plot(Stat_array[:,0],color = 'b',marker = "o",markersize = 10,label = 'Mean')
+            plt.plot(Stat_array[:,1],color = 'r',marker = "o",markersize = 10,label = 'std dev')            
+            plt.plot(Stat_array[:,2],color = 'g',marker = "o",markersize = 10,label = 'variance')
+            plt.xlabel('Assignments',fontsize = 15)
+            plt.ylabel('Mean,SD,Var of each Assignment',fontsize = 14)
+            plt.title('Comparison of ALL stats between assignments',fontsize = 16)
+            plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+            plt.xticks([i for i in range(len(Anames))],Anames)
+            plt.legend()
+
+            buf = BytesIO()
+            plt.savefig(buf, format='png', dpi=300)
+            graphAll = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+            buf.close()
+
+            plt.clf()
+
+        if True:
+            cum_means = Cumulatives[-3]
+            cum_stds = Cumulatives[-2]
+            cum_vars = Cumulatives[-1]
+
+            #-------------------mean
+            plt.plot(cum_means,color = 'deepskyblue',marker = "o",markersize = 10)
+            plt.xlabel('Assignments',fontsize = 15)
+            plt.ylabel('Class Avg till that point',fontsize = 14)
+            plt.title('Progress of class avg',fontsize = 16)
+            plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+            plt.xticks([i for i in range(len(Anames))],Anames)
+
+            buf = BytesIO()
+            plt.savefig(buf, format='png', dpi=300)
+            CumAM = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+            buf.close()
+
+            plt.clf()
+
+            #----------------std dev
+            plt.plot(cum_stds,color = 'orange',marker = "o",markersize = 10)
+            plt.xlabel('Assignments',fontsize = 15)
+            plt.ylabel('Class SD till that point',fontsize = 14)
+            plt.title('Progress of the class SD',fontsize = 16)
+            plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+            plt.xticks([i for i in range(len(Anames))],Anames)
+
+            buf = BytesIO()
+            plt.savefig(buf, format='png', dpi=300)
+            CumAS = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+            buf.close()
+
+            plt.clf()
+
+            #---------------variance
+            plt.plot(cum_vars,color = 'darkviolet',marker = "o",markersize = 10)
+            plt.xlabel('Assignments',fontsize = 15)
+            plt.ylabel('class Variance till that point',fontsize = 14)
+            plt.title('Progress of the class Variance',fontsize = 16)
+            plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+            plt.xticks([i for i in range(len(Anames))],Anames)
+
+            buf = BytesIO()
+            plt.savefig(buf, format='png', dpi=300)
+            CumAV = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+            buf.close()
+
+            plt.clf()
+
+            #------------------all in a single graph.
+            plt.plot(cum_means,color = 'deepskyblue',marker = "o",markersize = 10,label = 'Mean')
+            plt.plot(cum_stds,color = 'orange',marker = "o",markersize = 10,label = 'std dev')            
+            plt.plot(cum_vars,color = 'darkviolet',marker = "o",markersize = 10,label = 'variance')
+            plt.xlabel('Assignments',fontsize = 15)
+            plt.ylabel('Class stats at that time',fontsize = 14)
+            plt.title('Progress of class stats',fontsize = 16)
+            plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+            plt.xticks([i for i in range(len(Anames))],Anames)
+            plt.legend()
+
+            buf = BytesIO()
+            plt.savefig(buf, format='png', dpi=300)
+            CumAll = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+            buf.close()
+
+            plt.clf()
+
+            #--------------percentages--------------
+            mm = cum_means
+            ww = Cumulatives[-4]
+            percs = [ (mm[i]*100/ww[i]) for i in range(len(Anames))]
+
+            plt.plot(percs,color = 'fuchsia',marker = "o",markersize = 10)
+            plt.xlabel('Assignments',fontsize = 15)
+            plt.ylabel('class avg percentage at that point',fontsize = 14)
+            plt.title('Progress of the class avg %',fontsize = 16)
+            plt.grid(color='silver', linestyle='-', linewidth=1,axis = 'y')
+            plt.xticks([i for i in range(len(Anames))],Anames)
+
+            buf = BytesIO()
+            plt.savefig(buf, format='png', dpi=300)
+            CumPerc = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
+            buf.close()
+
+            plt.clf()
+
+        args = {
+            'INSrTA': True,
+            'course': c,
+            'NiceData': nice,
+            'RawData': raw,
+            'CorrData': corrected,
+            'Anames': Anames,
+            'Snames':Snames,
+            'assigns':A,
+            'IU':Indivs_U,
+            'IC': Indivs_C,
+            'TC': Totals_C,
+            'Cumls': Cumulatives,
+            'NumS': len(Snames),
+            'histT':histTot,
+            'graphAM':graphAM,
+            'graphAS':graphAS,
+            'graphAV':graphAV,
+            'graphAll':graphAll,
+            'CumAM':CumAM,
+            'CumAS':CumAS,
+            'CumAV':CumAV,
+            'CumAll':CumAll,
+            'CumPerc':CumPerc,
+        }
+        return render(request,'courses/grades.html',args)
+
+
+
+#----------helper functions for mean, avgs etc...
+def nice_data(course):
+    A = course.assignment_set.all()
+    C = course
+    S = C.students.all()
+
+    Snames = [ s.username for s in S ]
+    Anames = [ a.name for a in A ]
+
+    numS = len(S)
+    numA = len(A)
+
+    Data = np.zeros((numS,numA))
+
+    for assign in A:
+        ind1 = Anames.index(assign.name)
+        for sub in assign.filesubmission_set.all():
+            ind2 = Snames.index(sub.user.username)
             if sub.corrected == 'YES':
-                l.append(sub.grade)
+                Data[ind2][ind1] = sub.grade
     
-    plt.hist(l)
-    plt.show()
+    #print(Snames)
+    #print(Data)
+    return Data
+
+def raw_data(course):
+    A = course.assignment_set.all()
+    C = course
+    S = C.students.all()
+
+    Snames = [ s.username for s in S ]
+    Anames = [ a.name for a in A ]
+
+    numS = len(S)
+    numA = len(A)
+
+    Data = np.full((numS,numA),-2.0)
+
+    for assign in A:
+        ind1 = Anames.index(assign.name)
+        for sub in assign.filesubmission_set.all():
+            ind2 = Snames.index(sub.user.username)
+            Data[ind2][ind1] = sub.grade
+    
+    #print(Snames)
+    #print(Data)
+    return Data
+
+def corrected_data(course):
+    A = course.assignment_set.all()
+    C = course
+    S = C.students.all()
+
+    Snames = [ s.username for s in S ]
+    Anames = [ a.name for a in A ]
+
+    numS = len(S)
+    numA = len(A)
+
+    Data = np.zeros((numS,numA))
+
+    for assign in A:
+        ind1 = Anames.index(assign.name)
+        for sub in assign.filesubmission_set.all():
+            ind2 = Snames.index(sub.user.username)
+            if sub.corrected == 'YES':
+                Data[ind2][ind1] = round( ((sub.grade)*(assign.weightage)/assign.maxmarks), 2)
+    
+    #print(Snames)
+    #print(Data)
+    return Data
+
+def total_data(Corr_Data,n,course,adjusted= True):
+    A = course.assignment_set.all()
+    C = course
+    S = C.students.all()
+
+    Snames = [ s.username for s in S ]
+    Anames = [ a.name for a in A ]
+
+    numS = len(S)
+    numA = len(A)
+
+    sliced = Corr_Data[:,0:n]
+
+    means = np.mean(sliced,axis=0)
+    stds = np.std(sliced,axis=0)
+    vars = np.var(sliced,axis=0)
+    totals = np.sum(sliced,axis=1)
+
+    Indivs = []
+    outof = 0
+    for i in range(n):
+        l_nr = [means[i],stds[i],vars[i]]
+        l = [round(x,2) for x in l_nr ]
+        outof += (A[i].weightage)
+        if adjusted:
+            l.append(A[i].weightage)
+        else:
+            l.append(A[i].maxmarks)
+        Indivs.append(l)
+    
+    total_mean = np.mean(totals)
+    total_std = np.std(totals)
+    total_var = np.var(totals)
+
+    Totals_nr =  totals.tolist() + [outof, total_mean,total_std,total_var]
+    Totals = [round(x,2) for x in Totals_nr]
 
 
-    buf = BytesIO()
-    plt.savefig(buf, format='png', dpi=300)
-    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8').replace('\n', '')
-    buf.close()
 
-    args = {
-        'course': c,
-        'image_base64': image_base64
-    }
-    return render(request,'courses/grades.html',args)
+    return [Indivs,Totals]
+
+
+
+
+def assign_marks_array(course,assign):
+    A = assign
+    C = course
+    S = C.students.all()
+
+    Snames = [ s.username for s in S ]
+
+    numS = len(S)
+
+    Data = np.zeros(numS)
+
+    for sub in A.filesubmission_set.all():
+        ind = Snames.index(sub.user.username)
+        if sub.corrected == 'YES':
+            Data[ind] = sub.grade
+    
+    #print(Snames)
+    #print(Data)
+    return Data
+
+def cumulative_per_total(totals,percs,weights):
+    n = len(totals)
+    cum_total = [0 for i in range(n)]
+    cum_weights = [0 for i in range(n)]
+    for i in range(n):
+        if i == 0:
+            cum_total[i] = totals[0]
+            cum_weights[i] = weights[0]
+        else:
+            cum_total[i] = cum_total[i-1] + totals[i]
+            cum_weights[i] = cum_weights[i-1] + weights[i]
+
+    T = cum_total
+    W = cum_weights
+    cum_percs = [ (T[i]/W[i])*100 for i in range(n)]
+
+    return[T,cum_percs]
+
+
+#________________________________________________**********
+def alert(request,course_id):
+    pass
 
 #____________________________________________________**********
 def autograde(request,course_id,assign_id):
     pass
-
-#see for bot chat url.
-
-#_______________________________________________________****************
-def Settings(request,course_id):
-    pass
-
-
-
-
-

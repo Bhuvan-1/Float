@@ -29,18 +29,44 @@
 </div>
 
 
+<div style="text-align: center;">
+  <h1 style="font-size: 50px; font-weight: 700;">Submissions</h1>
+  </div>
+
 <br>
+<hr>
 
 <div class="f1" style="text-align: center; width: 100%;"><h1><div style="display: inline; color: rgb(131, 115, 115);">Assignment:</div>  {{ assign.name }}  <div style="display: inline; color: rgb(50, 170, 250);">[ {{ assign.maxmarks }} marks ]</div></h1></div>
 
 <div style="text-align: center;">
-<h2 style="color: rgb(0, 0, 0);">DEADLINE:  <div style="display: inline; color: crimson;">{{ assign.deadline }}</div></h2>
-</div>
-<div class="f1" style="text-align: center; width: 100%;"><h2><div style="display: inline; color: rgb(131, 115, 115);">Weightage:</div>  {{ assign.weightage }}% </h2></div>
+{% if nowtime < assign.deadline %}
+<h2 style="color: rgb(0, 0, 0);">DEADLINE:  <div style="display: inline; color: crimson;">{{ assign.deadline }}</div> | <div style="display: inline; color: rgb(20, 220, 30);">RUNNING</div></h2>
+{% else %}
+<h2 style="color: rgb(0, 0, 0);">DEADLINE:  <div style="display: inline; color: crimson;">{{ assign.deadline }}</div> | <div style="display: inline; color: rgb(220, 20, 70);">OVER</div></h2>
+{% endif %}
 
+</div>
+
+
+
+<div class="f1" style="text-align: center; width: 100%;">
+    <h2><div style="display: inline; color: rgb(131, 115, 115);">Weightage:</div>  {{ assign.weightage }}% </h2>
+  
+    <div style="text-align: center;">
+      {% if GRADED %}
+          <h2 style="color: rgb(16, 221, 61);"><div style="display: inline; color: rgb(131, 115, 115);">Grading:</div>COMPLETED</h2>
+      {% else %}
+          <h2 style="color: red;" "><div style="display: inline; color: rgb(131, 115, 115);">Grading:</div> NOT COMPLETED </h2>
+      {% endif %}
+    </div>
+  </div>
 <br>
 
 <div class="container mt-5" style="background-color: rgb(255, 255, 255);">
+
+  <h1>MarkList</h1>
+  
+  <div style="text-align: center;"><h3>see below⬇️ for statistics</h3></div>
     <div class="row">
         <div class="col-12">
             <table class="table">
@@ -81,7 +107,8 @@
     </div>
 </div>
 
-
+<br>
+<br>
 <div class="assignment2">
   <form method="post" enctype="multipart/form-data" action="" >
       {% csrf_token %}
@@ -99,5 +126,28 @@
       <button type="submit" class="button9">Give Feedback</button>
     </a>
 </div>
+
+<br>
+<br>
+<br>
+<hr>
+
+<div style="text-align: center;">
+  <h1 style="font-size: 50px; font-weight: 600;">Statistics</h1>
+</div>
+
+
+<h2>Histogram of the marks Distribution:</h2>
+<div style="display: inline; text-align: center; padding: 0px 150px;">
+<img src="data:image/png;base64,{{histv}}" alt="Histogram of Marks" width=600 height=auto  />
+<img src="data:image/png;base64,{{histm}}" alt="Histogram of Marks" width=600 height=auto />
+</div>
+
+
+<div class="f1" style="text-align: center; width: 100%;"><h2><div style="display: inline; color: rgb(131, 115, 115);">Mean:</div>  {{ mean }}  <div style="display: inline; color: rgb(50, 170, 250);">[ {{ assign.maxmarks }} ]</div></h2></div>
+<div class="f1" style="text-align: center; width: 100%;"><h2><div style="display: inline; color: rgb(131, 115, 115);">Std Deviation:</div>  {{ sd }}</h2></div>
+<div class="f1" style="text-align: center; width: 100%;"><h2><div style="display: inline; color: rgb(131, 115, 115);">Variance:</div>  {{ var }}</h2></div>
+
+
 
 {% endblock %}

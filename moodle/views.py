@@ -160,10 +160,16 @@ def bot(request):
 			M = DM.objects.create(user = request.user,chat = C)
 			M.message = form.cleaned_data['message']
 			M.save()
+			
 
-			R = DM.objects.create(user = usr2,chat = C)
-			R.message = clibot.reply(M.message,usr1.pk)
-			R.save()
+			if M.message.lower() == 'clear' or M.message == 'clean':
+				for msg in C.dm_set.all():
+					msg.delete()
+			else:
+				R = DM.objects.create(user = usr2,chat = C)
+				reply = clibot.reply(M.message,usr1.pk)
+				R.message = reply
+				R.save()
 			
 			return redirect('cli')
 	else:
@@ -174,4 +180,4 @@ def bot(request):
 		'msgs': C.dm_set.all(),
 		'user2': usr2,
 	}
-	return render(request,'accounts/DM.html',args)
+	return render(request,'accounts/bot.html',args)

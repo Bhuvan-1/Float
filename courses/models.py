@@ -80,6 +80,14 @@ class DM(models.Model):
     chat = models.ForeignKey(Chat,on_delete=models.CASCADE)
 
 
+class TA_Permission(models.Model):
+    user = models.ForeignKey(User,on_delete=CASCADE)
+    course = models.ForeignKey(Course,on_delete=CASCADE)
+    assign_create = models.CharField(max_length=4,default='NO')
+    forum_create = models.CharField(max_length=4,default='NO')
+    add_students = models.CharField(max_length=4,default='NO')
+
+
 # post_save.connect(create_forum,sender = Course)
 
 # def create_forum(sender,**kwargs):
