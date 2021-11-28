@@ -438,8 +438,8 @@ def submissions(request,course_id,assign_id):
 
     marks = assign_marks_array(c,a)
 
-    min_marks = np.amin(marks)
-    max_marks = np.amax(marks)
+    min_marks = np.amin(marks) if  marks.size != 0 else 0
+    max_marks = np.amax(marks) if  marks.size != 0 else 0
     cap = a.maxmarks
 
     M_mean = marks.mean()
