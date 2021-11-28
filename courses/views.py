@@ -983,7 +983,7 @@ def grades(request,course_id):
         if True:
             ax = plt.figure().gca()
             ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-            plt.hist(marks,bins = int(cap/10),edgecolor = 'k',linewidth = 2,color='blue',alpha = 0.68,label='Marks')
+            plt.hist(marks,bins = max(int(cap/10),1),edgecolor = 'k',linewidth = 2,color='blue',alpha = 0.68,label='Marks')
             plt.xlabel('Whole Marks Range',fontsize = 15)
             plt.ylabel('Frequency| num of students',fontsize = 15)
             plt.title('Histogram of Course Totals, Mean',fontsize = 18)
