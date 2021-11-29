@@ -15,6 +15,7 @@ def reply(question,user_id):
     I = u.ins_courses.all()
     S = u.stud_courses.all()
     T = u.ta_courses.all()
+    ans = ''
 
     if Q in ['hi','hiii','hii','hello','hey']:
         ans = 'Hello 👋 ' + u.username
