@@ -7,7 +7,11 @@ class DateTimeInput(forms.DateTimeInput):
 
 
 class CourseCreationForm(forms.Form):
-    name = forms.CharField(label='Course name', max_length=100)
+    name = forms.CharField(
+        label='Course name',
+        max_length=100,
+        widget = forms.TextInput(attrs = {'class' : 'textareaform'})
+    )
 
 class CourseJoinForm(forms.Form):
     code = forms.CharField(label='Enter Course Code', max_length=10)

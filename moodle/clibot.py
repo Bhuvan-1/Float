@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from courses.models import Course,Chat,Assignment,FileSubmission,DM
-
+from django.shortcuts import redirect
+import datetime
 
 def reply(question,user_id):
     Q = question
@@ -77,6 +78,17 @@ def reply(question,user_id):
                 i += 1
     
     #send-msg-<username>-msg.
+
+    elif Q == 'ls -a -all':
+            
+            for c in list(I) + list(S) + list(T):
+                ans = 'Assignemnts in Course: ' + c.name + '\n'
+                AA = c.assignment_set.all()
+                for n in AA:
+                    ans += n.name + '\n'
+                ans += '\n'
+
+
     elif Q.startswith('send-msg'):
         L = question.split('-',3)
         un = L[2]
@@ -107,7 +119,60 @@ def reply(question,user_id):
         d.save()
         return 'Message Sent Successfully'	
 
-     
+    elif Q.startswith('ls -a -'):
+        cs = question[7:]
+        X = Course.objects.all().filter(name = cs)
+        if X.count() == 0:
+            return 'Course: <' + cs + '> NOT FOUND'
+        else:
+            for c in X:
+                if u in [c.instructor] or u in c.TAs.all() or u in c.students.all():
+                    ans = 'Assignemnts in Course: ' + cs + '\n'
+                    AA = c.assignment_set.all()
+                    for n in AA:
+                        ans += n.name + '\n'
+
+    elif Q.startswith('ls -ad -'):
+        cs = question[8:]
+        X = Course.objects.all().filter(name = cs)
+        if X.count() == 0:
+            return 'Course: <' + cs + '> NOT FOUND'
+        else:
+            for c in X:
+                if u in [c.instructor] or u in c.TAs.all() or u in c.students.all():
+                    ans = 'TO-DO Assignemnts in Course: ' + cs + '\n'
+                    AA = c.assignment_set.all()
+                    now = datetime.datetime.now()
+                    for n in AA:
+                        if now < n.deadline:
+                            f = n.filesubmission_set.all()
+                            submi = False
+                            for s in f:
+                                if s.user == u:
+                                    submi = True
+                            if not submi:
+                                ans += 'Assign:  ' + n.name +' , Deadline:' + str(n.deadline)+ '\n'
+
+    elif Q.startswith('ls -ag -'):
+        cs = question[8:]
+        X = Course.objects.all().filter(name = cs)
+        if X.count() == 0:
+            return 'Course: <' + cs + '> NOT FOUND'
+        else:
+            for c in X:
+                if  u in c.students.all():
+                    ans = 'Assignemnts,Grades in Course: ' + cs + '\n'
+                    AA = c.assignment_set.all()
+                    for n in AA:
+                        F = n.filesubmission_set.all()
+                        y = True
+                        for f in F:
+                            if f.user == u:
+                                ans += 'Assign:  '  + n.name + ',  Grade:' +str(f.grade) +  '\n'
+                                y = False  
+                        if y:
+                            ans += 'Assign:  '  + n.name + ',  Grade:' + ' NOT SUBMITTED'  + '\n'
+                                                          
 
     
     else:
