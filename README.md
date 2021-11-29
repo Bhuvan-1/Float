@@ -10,24 +10,25 @@ Float Moodle is a website which provides services to its users. Some of it's imp
 - Once an account is created we can use those credentials to login into our account and there we can see the dashboard.
 
 ## Dashboard
-- After we login to the float moodle we can see our dashboard and it contains the user profile.
-- We have the options of editing our profile and changing our current password.
+- After we login in to the website we can see our dashboard and it contains the user profile.
+- We have the options of editing our profile and we also have an option of changing our current password.
+
   
 ## Courses
 - We can create a course or join a course either as a student or a TA.
-- After we create a course then 2 codes get generated randomly, one for TA's and other for students.
+- After we create a course then 2 codes will be generated randomly, one for TA's and other for students.
 - We can use these codes to join the course as a student or a TA.
 - Everyone can view the list of students registered in the course while only the instructor has the authority of removing a student.
 - TA's don't have the authority of adding or removing students from the courses, but this can be altered by the instructor.
 - And each course created has an indicator indicating the percentage of course activities that are finished.
-- For students it indicates the percentage of assignments that are finished and for instructors it indicates the percentage of assignments that are corrected by them.
+- For students it indicates the percentage of assignments that are finished and for instructors it indicates the percentage of assignments that are graded by them.
 - There is also a **To do** list present on the sides which reminds us of our incomplete activities in our courses.
 <img src="https://drive.google.com/uc?export=view&id=1PKrd84konD6gRUNAb-QG3k9-rHVHo7__" width="600">
 
 
 
 ## Assignment
-- If we are an instructor then we can create an assignment and can upload it in float moodle.
+- If we are an instructor then we can create an assignment and can upload it in the website.
 - While uploading the assignment we have to give assignment name, attach a copy of the assignment,also we can give a url link for that assignment and we can add some description if needed along with maximum marks and the deadline for submission.
 - Now when a student in the course opens the course he can see the assignments that are uploaded and when he opens the assignment he can see the name of the assignment, document of the assignment and also a url of the assignment and below it we can see the submission status and also an option for choosing a file to submit.
 - Once submitted it shows the students an option of re-submit if we have made any changes to our original file afterwards.
@@ -54,7 +55,7 @@ Float Moodle is a website which provides services to its users. Some of it's imp
 - Instructor can view the progress of all the students throughout a particular course along with their statistics.
 <img src="https://drive.google.com/uc?export=view&id=1fcp9S2d8_ROi0PRM8S-YDA-fkPPD9uSM" width="600"> 
 
-- Histogram of the course totals currently is also available for the instructor of the course.
+- Histogram of the course total of every student upto a particular assignment is also available for the instructor of the course.
 <img src="https://drive.google.com/uc?export=view&id=1eKgTLHqNV2yPqR4LCR4u9HhDFP3nC0OQ" width="600"> 
 
 - Various graphs for comparison of assignments by different methods are also available for the instructor.
@@ -79,3 +80,11 @@ Float Moodle is a website which provides services to its users. Some of it's imp
     - if our msg is my-name then it responds with our name and similar is the case for my-email,my-first-name,my-last-name,my-profile
     - if our msg is who-r-u then the response is I am CLI-BOT 🤖, U can ask me queries and I will try my best to answer them.
     - if our msg is users-list then it gives out the list of users in the course other than itself.
+    - Other Various Commands are:
+    - It tells our profile details when we query ```my-name, my-email, my-profile``` etc..
+    - It returns the list various types of courses on asking ```list-stud-courses, list-courses``` etc
+    - Also many commands work even with Capital letters in between.
+    - ```ls -a -all``` tells all assignments in all courses
+    - ```ls -ad -<Course>``` tells The TO-DO list assignments in that course
+    - ```ls -ag -<Course>``` tells the grades of all assignmnets in that course
+    - We can also send messages to other users via the bot, using ```send-msg-<name>-<message>```
